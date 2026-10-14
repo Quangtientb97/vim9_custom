@@ -41,7 +41,10 @@ let g:which_key_map_s = {
     \ 'm': [':set modifiable',              'set-modifiable'],
     \ 's': [':w!',                          'quick-save (:w!)'],
     \ 'w': [':set wrap!',                   'toggle-line-wrap'],
+    \ 'n': [':SnippetList',                 'list-snippets (:SnippetList)'],
     \ 'g': [':call ToggleGitDiff()',        'git-diff-toggle (gd/sg)'],
+    \ 'p': [':call ShowSourcePopup()',       'source-popup-def (sp/gp)'],
+    \ 't': [':ContextToggle',                'toggle-sticky-context (st)'],
     \ 'd': {
     \     'name': '+doxygen',
     \     'x': [':Dox',       'doxygen-comment (:Dox)'],
@@ -61,6 +64,7 @@ let g:which_key_map_s_vis = {
     \ 'c': [':<C-u>call QuickCalc(1)',        'quick-calculator'],
     \ 'h': [':WhichKeyVisual "\\"',           'which-key-menu (full)'],
     \ 's': [':w!',                            'quick-save (:w!)'],
+    \ 'p': [':<C-u>call ShowSourcePopupVisual()', 'source-popup-def (sp/gp)'],
 \ }
 
 call which_key#register('s', 'g:which_key_map_s', 'n')
@@ -78,13 +82,13 @@ let g:which_key_map_root = {
     \ },
     \ '_':     [':call EasyAlignUnderCursor()',        'align-under-cursor (_)'],
     \ 'd':     { 'name': '+delete', 's': 'delete-matching-pair (ds on bracket/quote)' },
-    \ 'g':     { 'name': '+git/splitjoin', 'd': [':call ToggleGitDiff()', 'git-diff-toggle (gd)'], 's': 'split-multiline (gs)', 'j': 'join-singleline (gj)' },
+    \ 'g':     { 'name': '+git/splitjoin', 'd': [':call ToggleGitDiff()', 'git-diff-toggle (gd)'], 'p': [':call ShowSourcePopup()', 'source-popup-def (gp)'], 's': 'split-multiline (gs)', 'j': 'join-singleline (gj)' },
     \ 'S':     [':Startify',                           'startify-dashboard'],
     \ '<F1>':  [':call CloseCurrentFileAndTerminal()', 'close-file/terminal'],
     \ '<F3>':  [':call ToggleNERDTree()',              'nerdtree-toggle'],
     \ '<F4>':  [':NERDTreeToggle | :TagbarToggle',     'nerdtree+tagbar'],
     \ '<F5>':  [':e!',                                 'reload-current-file'],
-    \ '<F7>':  [':call AddMinus()',                    'insert-minus-divider'],
+    \ '<F7>':  [':call BlockComment()',                'generate-block-comment'],
     \ '<F12>': [':call ToggleBottomTerminal()',        'bottom-terminal-drawer'],
 \ }
 

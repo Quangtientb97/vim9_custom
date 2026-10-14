@@ -21,18 +21,23 @@ let g:loaded_verilog_align = 1
 "-----------------------------------------------------------------------------
 function! AlignVerilogDecls(first, last) abort
     let l:lines = []
+    let l:max_qual = 0
     let l:max_dir = 0
     let l:max_type = 0
     let l:max_range = 0
     let l:max_assign_name = 0
     let l:max_tail = 0
+    let l:has_qual = 0
     let l:has_dir = 0
     let l:has_type = 0
     let l:has_range = 0
     let l:has_assign = 0
     let l:has_comment = 0
 
-    let l:type_pattern = '^\(\%(\%(logic\|wire\|reg\|bit\|int\|integer\|byte\|shortint\|longint\|time\|real\|string\|event\|genvar\|parameter\|localparam\|\w\+_t\|\w\+::\w\+_t\)\%(\s\+\%(signed\|unsigned\)\)\?\|signed\|unsigned\)\)\>\%(\s*\(.*\)\|\)$'
+    let l:qual_pat = '^\(\%(\%(local\|protected\|public\|randc\|rand\|const\|static\|pure\s\+virtual\|virtual\|automatic\|extern\)\s\+\)\+\)\(.*\)$'
+    let l:dir_pat = '^\(input\|output\|inout\|ref\)\>\%(\s*\(.*\)\|\)$'
+    let l:builtin_type_pat = '^\(\%(\%(logic\|wire\|reg\|bit\|int\|integer\|byte\|shortint\|longint\|time\|real\|realtime\|shortreal\|string\|event\|genvar\|chandle\|void\|parameter\|localparam\)\%(\s\+\%(signed\|unsigned\)\)\?\|signed\|unsigned\)\)\>\%(\s*\(.*\)\|\)$'
+    let l:custom_type_pat = '^\([a-zA-Z_]\w*\%(::[a-zA-Z_]\w*\)*\%(\s*#\s*([^)]*)\)\?\)\%(\s\+\|$\)\(.*\)$'
 
     for l:lnum in range(a:first, a:last)
         let l:line = getline(l:lnum)
@@ -55,35 +60,76 @@ function! AlignVerilogDecls(first, last) abort
             let l:has_comment = 1
         endif
 
-        " 3. Direction (input, output, inout, ref)
+        " 3. Qualifier (local, protected, rand, const, static, etc.)
+        let l:qual = ''
+        let l:m_qual = matchlist(l:rem, l:qual_pat)
+        if !empty(l:m_qual)
+            let l:qual = substitute(l:m_qual[1], '\s\+$', '', '')
+            let l:rem = l:m_qual[2]
+        endif
+
+        " 4. Direction (input, output, inout, ref)
         let l:dir = ''
-        let l:m_dir = matchlist(l:rem, '^\(input\|output\|inout\|ref\)\>\%(\s*\(.*\)\|\)$')
+        let l:m_dir = matchlist(l:rem, l:dir_pat)
         if !empty(l:m_dir)
             let l:dir = l:m_dir[1]
             let l:rem = l:m_dir[2]
         endif
 
-        " 4. Type
+        " 5. Check if range comes immediately after direction (e.g. input [31:0] data)
         let l:type = ''
-        let l:m_type = matchlist(l:rem, l:type_pattern)
-        if !empty(l:m_type)
-            let l:type = l:m_type[1]
-            let l:rem = l:m_type[2]
-        endif
-
-        " 5. Range (packed ranges e.g. [31:0] or [3:0][7:0] or [ 3:0])
         let l:range = ''
-        let l:m_range = matchlist(l:rem, '^\(\%(\[[^\]]\+\]\s*\)\+\)\(.*\)$')
-        if !empty(l:m_range)
-            let l:range = substitute(l:m_range[1], '\s*$', '', '')
-            let l:rem = l:m_range[2]
+        let l:m_range_first = matchlist(l:rem, '^\(\%(\[[^\]]\+\]\s*\)\+\)\(.*\)$')
+        if !empty(l:m_range_first)
+            let l:range = substitute(l:m_range_first[1], '\s*$', '', '')
+            let l:rem = l:m_range_first[2]
+        else
+            " 6. Type (built-in first, then custom/scoped/parameterized)
+            let l:m_type = matchlist(l:rem, l:builtin_type_pat)
+            if !empty(l:m_type)
+                let l:type = l:m_type[1]
+                let l:rem = l:m_type[2]
+            endif
+
+            " 7. Range (packed ranges e.g. [31:0] or [3:0][7:0])
+            let l:m_range = matchlist(l:rem, '^\(\%(\[[^\]]\+\]\s*\)\+\)\(.*\)$')
+            if !empty(l:m_range)
+                let l:range = substitute(l:m_range[1], '\s*$', '', '')
+                let l:rem = l:m_range[2]
+            endif
+
+            " If type was not built-in, check for custom type
+            if empty(l:type) && !empty(l:rem)
+                let l:m_custom = matchlist(l:rem, l:custom_type_pat)
+                if !empty(l:m_custom)
+                    let l:after = substitute(l:m_custom[2], '^\s*', '', '')
+                    if (empty(l:qual) && !empty(l:dir) && (empty(l:after) || l:after =~# '^[;,=]')) && l:m_custom[1] !~# '_t$'
+                        " e.g. 'input clk,' -> type is empty, clk is var name
+                    else
+                        let l:type = l:m_custom[1]
+                        let l:rem = l:m_custom[2]
+                        let l:m_range2 = matchlist(l:rem, '^\(\%(\[[^\]]\+\]\s*\)\+\)\(.*\)$')
+                        if !empty(l:m_range2)
+                            let l:range = substitute(l:m_range2[1], '\s*$', '', '')
+                            let l:rem = l:m_range2[2]
+                        endif
+                    endif
+                endif
+            endif
         endif
 
         let l:rem = substitute(l:rem, '^\s*', '', '')
 
-        if empty(l:dir) && empty(l:type) && empty(l:range)
+        if empty(l:qual) && empty(l:dir) && empty(l:type) && empty(l:range)
             call add(l:lines, {'raw': l:line, 'matched': 0})
             continue
+        endif
+
+        if !empty(l:qual)
+            let l:has_qual = 1
+            if len(l:qual) > l:max_qual
+                let l:max_qual = len(l:qual)
+            endif
         endif
 
         if !empty(l:dir)
@@ -107,7 +153,7 @@ function! AlignVerilogDecls(first, last) abort
             endif
         endif
 
-        " 6. Remainder: check for single assignment (e.g. name = val;)
+        " 8. Remainder: check for single assignment (e.g. name = val;)
         let l:m_assign = matchlist(l:rem, '^\([a-zA-Z_0-9$]\+\)\s*=\s*\(.*\)$')
         if !empty(l:m_assign)
             let l:has_assign = 1
@@ -119,6 +165,7 @@ function! AlignVerilogDecls(first, last) abort
             let l:item = {
                 \ 'matched': 1,
                 \ 'indent': l:indent,
+                \ 'qual': l:qual,
                 \ 'dir': l:dir,
                 \ 'type': l:type,
                 \ 'range': l:range,
@@ -132,6 +179,7 @@ function! AlignVerilogDecls(first, last) abort
             let l:item = {
                 \ 'matched': 1,
                 \ 'indent': l:indent,
+                \ 'qual': l:qual,
                 \ 'dir': l:dir,
                 \ 'type': l:type,
                 \ 'range': l:range,
@@ -170,42 +218,58 @@ function! AlignVerilogDecls(first, last) abort
             continue
         endif
 
-        let l:dir_str = ''
+        let l:parts = []
+
+        if l:has_qual
+            if !empty(l:info.qual)
+                call add(l:parts, printf('%-*s', l:max_qual, l:info.qual))
+            else
+                call add(l:parts, repeat(' ', l:max_qual))
+            endif
+        endif
+
         if l:has_dir
             if !empty(l:info.dir)
-                let l:dir_str = printf('%-*s', l:max_dir, l:info.dir)
+                call add(l:parts, printf('%-*s', l:max_dir, l:info.dir))
             else
-                let l:dir_str = repeat(' ', l:max_dir)
+                call add(l:parts, repeat(' ', l:max_dir))
             endif
         endif
 
-        let l:type_str = ''
         if l:has_type
             if !empty(l:info.type)
-                let l:type_str = (l:has_dir ? ' ' : '') . printf('%-*s', l:max_type, l:info.type)
+                call add(l:parts, printf('%-*s', l:max_type, l:info.type))
             else
-                let l:type_str = (l:has_dir ? ' ' : '') . repeat(' ', l:max_type)
+                call add(l:parts, repeat(' ', l:max_type))
             endif
         endif
 
-        let l:range_str = ''
         if l:has_range
-            let l:need_space = l:has_dir || l:has_type
             if !empty(l:info.range)
-                let l:range_str = (l:need_space ? ' ' : '') . printf('%-*s', l:max_range, l:info.range)
+                call add(l:parts, printf('%-*s', l:max_range, l:info.range))
             else
-                let l:range_str = (l:need_space ? ' ' : '') . repeat(' ', l:max_range)
+                call add(l:parts, repeat(' ', l:max_range))
             endif
         endif
 
-        let l:need_space_before_tail = l:has_dir || l:has_type || l:has_range
-        let l:tail_prefix = l:need_space_before_tail ? ' ' : ''
+        let l:prefix = join(l:parts, ' ')
+
+        if !empty(l:info.tail)
+            if !empty(l:prefix)
+                let l:body = l:prefix . ' ' . l:info.tail
+            else
+                let l:body = l:info.tail
+            endif
+        else
+            let l:body = l:prefix
+        endif
 
         if l:has_comment && !empty(l:info.comment)
-            let l:tail_formatted = printf('%-*s', l:max_tail, l:info.tail)
-            let l:newline = l:info.indent . l:dir_str . l:type_str . l:range_str . l:tail_prefix . l:tail_formatted . ' ' . l:info.comment
+            let l:target_width = (!empty(l:prefix) ? len(l:prefix) + 1 : 0) + l:max_tail
+            let l:body_padded = printf('%-*s', l:target_width, l:body)
+            let l:newline = l:info.indent . l:body_padded . ' ' . l:info.comment
         else
-            let l:newline = l:info.indent . l:dir_str . l:type_str . l:range_str . l:tail_prefix . l:info.tail
+            let l:newline = l:info.indent . l:body
         endif
 
         call setline(l:lnum, l:newline)
@@ -223,7 +287,23 @@ function! s:IsDeclLine(line) abort
     if a:line =~# '^\s*$' || a:line =~# '^\s*//'
         return 0
     endif
-    return a:line =~# '^\s*\%(input\|output\|inout\|ref\|logic\|wire\|reg\|bit\|int\|integer\|byte\|shortint\|longint\|time\|real\|string\|event\|genvar\|parameter\|localparam\|\w\+_t\)\>'
+    " 1. Qualifiers (local, protected, rand, randc, const, static, virtual, automatic, extern)
+    if a:line =~# '^\s*\%(local\|protected\|public\|randc\|rand\|const\|static\|pure\s\+virtual\|virtual\|automatic\|extern\)\>'
+        return 1
+    endif
+    " 2. Directions (input, output, inout, ref)
+    if a:line =~# '^\s*\%(input\|output\|inout\|ref\)\>'
+        return 1
+    endif
+    " 3. Built-in types & params
+    if a:line =~# '^\s*\%(logic\|wire\|reg\|bit\|int\|integer\|byte\|shortint\|longint\|time\|real\|realtime\|shortreal\|string\|event\|genvar\|chandle\|void\|parameter\|localparam\|signed\|unsigned\)\>'
+        return 1
+    endif
+    " 4. Scoped types or custom types followed by identifier
+    if a:line =~# '^\s*[a-zA-Z_]\w*\%(::[a-zA-Z_]\w*\)*\%(\s*#\s*([^)]*)\)\?\s\+\%(\[[^\]]*\]\s*\)*[a-zA-Z_0-9$]\+'
+        return 1
+    endif
+    return 0
 endfunction
 
 function! s:GetDeclBlockRange() abort

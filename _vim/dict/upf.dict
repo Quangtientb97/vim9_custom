@@ -1,0 +1,17 @@
+"=============================================================================
+" UPF (Unified Power Format) Dictionary Keywords (autocomplete)
+"=============================================================================
+upf_version create_power_domain create_supply_net create_supply_port
+create_power_switch create_logic_port create_composite_domain
+set_domain_supply_net set_isolation set_retention set_level_shifter
+connect_supply_net add_power_state create_pst add_pst_state
+set_design_top set_scope
+
+primary ground elements scope supply domain state
+isolation_control retention_control clamp_value
+update_power_domain load_upf map_power_switch
+
+
+# Snippet Triggers (Code Suggestions)
+upf_power_domain_Ent
+upf_supply_net_Ent

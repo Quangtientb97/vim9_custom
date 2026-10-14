@@ -2,7 +2,13 @@
 " LISA / LISA+ Syntax, Dictionary & Indentation Configuration
 " Used for: ARM Fast Models (LISA+) & Synopsys Processor Designer (LISA 2.0)
 "=============================================================================
-execute "setlocal dictionary+=" . expand("<sfile>:p")
+let s:dict_file = expand('<sfile>:p:h:h:h') . '/dict/lisa.dict'
+if filereadable(s:dict_file)
+    execute 'setlocal dictionary+=' . fnameescape(s:dict_file)
+endif
+if exists('*snippet_engine#load_filetype')
+    call snippet_engine#load_filetype('lisa')
+endif
 
 "-----------------------------------------------------------------------------
 " 1. Indentation & Formatting
@@ -54,13 +60,13 @@ syn keyword lisa_type uint8_t uint16_t uint32_t uint64_t
 syn keyword lisa_type size_t uintptr_t intptr_t
 
 " Function / Method calls
-syn match   lisa_function  "\<\w\+\s*("me=e-1 containedin=ALLBUT,lisa_comment,lisa_comment_block,lisa_string,lisa_condition,lisa_block,lisa_snps_block
+syn match   lisa_function  "\<\w\+\ze\s*("
 
 " Constants
-syn match   lisa_constant  "\<[A-Z_][A-Z0-9_]\{2,}\>" containedin=ALLBUT,lisa_comment,lisa_comment_block,lisa_string
+syn match   lisa_constant  "\<[A-Z_][A-Z0-9_]\{2,}\>"
 
 " Brackets & Operators
-syn match   lisa_bracket   "[{}[\]();,.]" containedin=ALLBUT,lisa_comment,lisa_comment_block,lisa_string
+syn match   lisa_bracket   "[{}[\]();,.]"
 
 "-----------------------------------------------------------------------------
 " 3. Highlight Links & Colors (Desert Scheme Compatible)

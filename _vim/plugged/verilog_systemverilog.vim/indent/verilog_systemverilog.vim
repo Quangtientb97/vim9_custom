@@ -45,7 +45,7 @@ let s:vlog_class          = '\<\(typedef\s\+\)\@<!class\>'
 let s:vlog_property       = g:verilog_syntax['property'][0]['match_start']
 let s:vlog_sequence       = g:verilog_syntax['sequence'][0]['match_start']
 let s:vlog_clocking       = g:verilog_syntax['clocking'][0]['match_start']
-"let s:vlog_preproc        = '^\s*`ifn\?def\>'
+let s:vlog_preproc        = '^\s*`ifn\?def\>'
 let s:vlog_define         = '^\s*`define\>'
 
 let s:vlog_case           = '\<case[zx]\?\>\s*('
@@ -142,8 +142,8 @@ function! GetVerilogSystemVerilogIndent()
 
   if s:curr_line =~ '^\s*\<while\>\s*(.*'.s:vlog_end_statement
     return indent(s:SearchForBlockStart('\<do\>', '', '\<while\>\s*(.*'.s:vlog_end_statement, v:lnum, 1))
-"  elseif s:curr_line =~ '^\s*`\(endif\|else\|elsif\)\>'
-"    return indent(s:SearchForBlockStart(s:vlog_preproc, '`else\>\|`elsif\>', '`endif\>', v:lnum, 1))
+  elseif s:curr_line =~ '^\s*`\(endif\|else\|elsif\)\>'
+    return indent(s:SearchForBlockStart(s:vlog_preproc, '`else\>\|`elsif\>', '`endif\>', v:lnum, 1))
   elseif s:curr_line =~ '^\s*' . s:vlog_join
     return indent(s:SearchForBlockStart('^\s*\<fork\>', '', s:vlog_join, v:lnum, 1))
   endif
@@ -421,8 +421,8 @@ function! s:GetContextIndent()
       return s:GetContextStartIndent("property"  , l:lnum) + l:open_offset
     elseif l:line =~ s:vlog_method && s:InsideSynPattern('verilog\(Task\|Function\)', l:lnum, "$")
       return s:GetContextStartIndent("method"    , l:lnum) + l:open_offset
-"    elseif l:line =~ s:vlog_preproc
-"      return s:GetContextStartIndent("preproc"   , l:lnum) + l:open_offset
+    elseif l:line =~ s:vlog_preproc
+      return s:GetContextStartIndent("preproc"   , l:lnum) + l:open_offset
     elseif l:line =~ s:vlog_context_end
       call verilog_systemverilog#Verbose("After the end of a context.")
       return indent(l:lnum)

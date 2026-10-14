@@ -1,11 +1,15 @@
 "=============================================================================
 " Jinja2 Syntax & Snippets Configuration
 "=============================================================================
-execute "setlocal dictionary+=" . expand("<sfile>:p")
+let s:dict_file = expand('<sfile>:p:h:h:h') . '/dict/jinja2.dict'
+if filereadable(s:dict_file)
+    execute 'setlocal dictionary+=' . fnameescape(s:dict_file)
+endif
 
-iabbrev jj2_for_Ent {%- for _fill in _fill %}<cr>{%- endfor %}<esc>
-iabbrev jj2_if_Ent {%- if _fill %}<cr>{%- endif %}<esc>
-iabbrev jj2_set_Ent {%- set _fill=_file %}<esc>
+" Load snippets from snipet/jinja2/
+if exists('*snippet_engine#load_filetype')
+    call snippet_engine#load_filetype('jinja2')
+endif
 
 syn region  jinja2_var       start =+{{+ end=+}}+
 syn region  jinja2_statement start =+{%+ end=+%}+

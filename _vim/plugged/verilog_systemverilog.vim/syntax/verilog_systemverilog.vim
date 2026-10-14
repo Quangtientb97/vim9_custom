@@ -24,7 +24,7 @@ endif
 let oldcpo=&cpoptions
 set cpo-=C
 
-syn sync lines=1000
+syn sync minlines=50 maxlines=150
 
 "##########################################################
 "       Systemverilog Syntax
@@ -67,8 +67,8 @@ syn keyword verilogStatement   randcase this
 syn keyword verilogStatement   randsequence
 syn keyword verilogStatement   get_randstate set_randstate
 syn keyword verilogStatement   srandom
-syn keyword verilogNumber   	logic bit byte time parameter posedge negedge
-syn keyword verilogNumber   	int longint shortint write read randomize boolean True False
+syn keyword verilogType     	logic bit byte time parameter posedge negedge
+syn keyword verilogType     	int longint shortint write read randomize boolean True False
 syn keyword verilogStatement   struct packed
 syn keyword verilogStatement   final
 syn keyword verilogStatement   import
@@ -119,21 +119,24 @@ syn match   verilogNumber      "\(\d\+\)\?'[sS]\?[hH]\s*[0-9a-fA-F_xXzZ?]\+"
 syn match   verilogNumber      "\<[+-]\?[0-9_]\+\(\.[0-9_]*\)\?\(e[0-9_]*\)\?\>"
 syn match   verilogNumber      "\<\d[0-9_]*\(\.[0-9_]\+\)\=\([fpnum]\)\=s\>"
 
-syn keyword verilogNumber      1step string void virtual null disable uvm_bitstream_t write_here create new add
+syn keyword verilogNumber      1step
+syn keyword verilogType        string void virtual null disable uvm_bitstream_t write_here create new add
 syn keyword verilogTodo        contained TODO FIXME NOTE
 
 syn match   verilogOperator    "[&|~><!*#%@+/=?:;}{,\^\-\[\]]"
 
-syn region  verilogString      start=+"+ skip=+\\"+ end=+"+ contains=verilogEscape,@Spell
-syn match   verilogEscape      +\\[nt"\\]+ contained
+syn region  verilogString      start=+"+ skip=+\\"+ end=+"+ contains=verilogEscape,verilogFormat,@Spell
+syn match   verilogEscape      +\\["\\abfnrtv0]+ contained
 syn match   verilogEscape      "\\\o\o\=\o\=" contained
+syn match   verilogFormat      "\%(0x\)\?%[-+0-9#]*\%(\.[0-9]*\)\?[hHxXdDbBoOcCsStTmMlLpPuUzZvVfFeEgG%]" contained
 
-syn keyword verilogMethod      new input output inout 
+syn keyword verilogMethod      new
+syn keyword verilogType        input output inout 
 
 if v:version >= 704
-    syn match   verilogMethod  "\(\(\s\|[(/]\|^\)\.\)\@2<!\<\w\+\ze#\?("
+    syn match   verilogMethod  "\(\(\s\|[(/]\|^\)\.\)\@2<!\<\w\+\ze\s*("
 else
-    syn match   verilogMethod  "\(\(\s\|[(/]\|^\)\.\)\@<!\<\w\+\ze#\?("
+    syn match   verilogMethod  "\(\(\s\|[(/]\|^\)\.\)\@<!\<\w\+\ze\s*("
 endif
 
 syn match   verilogLabel       "\<\k\+\>\ze\s*:\s*\<\(assert\|assume\|cover\(point\)\?\|cross\)\>"
@@ -380,39 +383,36 @@ syn sync minlines=50
 " For version 5.8 and later: only when an item doesn't have highlighting yet
 "---------------------------------------------------------------------
 "	Mydefine
-syn match   verilogAndor                "[&|^{}]"           containedin=ALLBUT,verilogComment
+syn match   verilogAndor                "[&|^]"
+syn match   verilogRoundbracket         "[[\]();,+<>]"
 syn match   verilogProperty             "\\"                containedin=verilogComment
-syn match   verilogRoundbracket         "[();,+<>]"         containedin=ALLBUT,verilogComment,verilogString
-syn match	verilogProperty			    "::\w*"             containedin=ALLBUT,verilogComment
-syn match 	verilogProperty 			"\.\w* "            containedin=ALLBUT,verilogComment
-syn match 	verilogProperty 			"\.\w*[;,=)]"       containedin=ALLBUT,verilogComment
-syn match 	verilogProperty 			"\.\w+\s*("         containedin=ALLBUT,verilogRoundbracket,verilogComment,verilogAndor
-syn match 	verilogUvm		 			"\w\w*_t\W"         containedin=ALLBUT,verilogComment,verilogMacro,verilogString,verilogNot
-syn match 	verilogUvm		 			"\suvm_\w*"         containedin=ALLBUT,verilogComment,verilogMacro,verilogString,verilogNot
-syn match 	verilogUvm		 			"\s*cdn[A-Z]\w*"    containedin=ALLBUT,verilogComment,verilogMacro,verilogString,verilogNot
-syn match 	verilogUvm		 			"\s*\w\w*_[ct]\s"   containedin=ALLBUT,verilogComment,verilogString
-syn match 	verilogUvm		 			"\s*\w\w*_[ct];"    containedin=ALLBUT,verilogComment,verilogString
-syn match 	verilogNot		 			"\s*\w\w*_e\s"      containedin=ALLBUT,verilogComment,verilogString
-syn match 	verilogNot		 			"\s*\w\w*_e;"       containedin=ALLBUT,verilogComment,verilogString
-syn match 	verilogNot					"!\w*"              containedin=ALLBUT,verilogComment
-syn match 	verilogNot					"!="                containedin=ALLBUT,verilogComment
-syn match 	verilogNot					"%\d*[a-z]"         containedin=ALLBUT,verilogComment
-syn match 	verilogNot					"%\d*\.\d*[a-z]"    containedin=ALLBUT,verilogComment
-syn match 	verilogNot					"%-\d*[a-z]"        containedin=ALLBUT,verilogComment
-syn match 	verilogNot					"``[a-zA-Z0-9_][a-zA-Z0-9_]*``"         containedin=ALLBUT,verilogComment
-syn match 	verilogNot					"%[a-z]"            containedin=ALLBUT,verilogComment
-syn match 	verilogNot					"\[[a-z$0-9_]*\]"   containedin=ALLBUT,verilogComment,verilogStatement
-syn match 	verilogNot					"`ifndef"           containedin=ALLBUT,verilogComment,verilogStatement
-syn match 	verilogMacro				"`\w\w*"            containedin=ALLBUT,verilogComment,verilogNot,verilogErrorKeyword
-syn match 	verilogMethod    			"\s\w\w*_\w\w*\s*(" containedin=ALLBUT,verilogComment,verilogStatement,verilogString
-syn match 	verilogErrorKeyword	        "\$tests\$"         containedin=ALLBUT,verilogComment
-syn match 	verilogErrorKeyword	        "\$bit("            containedin=ALLBUT,verilogComment
-syn match 	verilogErrorKeyword	        "$plusarg("         containedin=ALLBUT,verilogComment
-syn match 	verilogErrorKeyword	        "\$xm_miror"        containedin=ALLBUT,verilogComment
-syn match 	verilogErrorKeyword	        "`elif"             containedin=ALLBUT,verilogComment
-syn match   verilogTypeDef              "\s\w\w*_t\s"       containedin=ALLBUT,verilogComment
+syn match	verilogProperty			    "::\k\+"
+syn match 	verilogProperty 			"\.\k\+\ze\s*[;,=()]"
+syn match 	verilogProperty 			"\.\k\+\ze\s*("
+syn match 	verilogUvm		 			"\<uvm_\k\+\>"
+syn match 	verilogUvm		 			"\<\k\+_t\>"
+syn match 	verilogUvm		 			"\<\k\+_c\>"
+syn match 	verilogUvm		 			"\<\k\+_e\>"
+syn match 	verilogUvm		 			"\<cdn[A-Z]\k\+\>"
+syn match 	verilogUvm		 			"\<\k\+_[cte]\ze\s*[; \t]"
+syn match 	verilogClass		 		"\%(\<class\s\+\)\@<=[a-zA-Z_]\w*"
+syn match 	verilogClass		 		"\%(\<extends\s\+\)\@<=[a-zA-Z_]\w*"
+syn match 	verilogClass		 		"\%(\<implements\s\+\)\@<=[a-zA-Z_]\w*"
+syn match 	verilogNot					"!\k*"
+syn match 	verilogNot					"!="
+syn match 	verilogNot					"%\%(-\?\d*\)\?\%(\.\d*\)\?[a-zA-Z]"
+syn match 	verilogNot					"``[a-zA-Z0-9_]\+``"
+syn match 	verilogNot					"`ifndef\>"
+syn match 	verilogMacro				"`[a-zA-Z0-9_$]\+\>"
+syn match 	verilogMethod    			"\<\w\+_\w\+\ze\s*("
+syn match 	verilogErrorKeyword	        "\$tests\$"
+syn match 	verilogErrorKeyword	        "\$bit("
+syn match 	verilogErrorKeyword	        "$plusarg("
+syn match 	verilogErrorKeyword	        "\$xm_miror"
+syn match 	verilogErrorKeyword	        "`elif\>"
 syn match   verilogConstant             "\<[_A-Z][A-Z0-9_$]*[a-z]\>"
-syn keyword verilogAssign               assign containedin=ALLBUT,verilogComment,verilogString
+syn keyword verilogAssign               assign
+
 
 
 
@@ -443,28 +443,31 @@ if version >= 508 || !exists("did_verilog_syn_inits")
 	 HiLink     verilogString         Statement
 	 HiLink     verilogTodo           Todo
 
-	 highlight  verilogProperty      ctermfg=215 guifg=#ffaf5f
-	 highlight  verilogRoundbracket  ctermfg=white guifg=#ffffff     "ctermfg =254
-	 highlight  verilogUvm           ctermfg=blue guifg=#5fafff
+	 highlight  verilogProperty      ctermfg=117 guifg=#9cdcfe
+	 highlight  verilogRoundbracket  ctermfg=252 guifg=#d4d4d4
+	 highlight  verilogUvm           ctermfg=75 guifg=#569cd6
 	 highlight  verilogAndor         ctermfg=red guifg=#ff5f5f
 	 highlight  verilogComment       ctermfg=107 guifg=#87af5f
 	 highlight  verilogConditional   ctermfg=176 guifg=#d787d7
-	 highlight  verilogEscape        ctermfg=42 guifg=#00d787
+	 highlight  verilogEscape        ctermfg=179 guifg=#d7ba7d
+	 highlight  verilogFormat        ctermfg=179 guifg=#d7ba7d
 	 highlight  verilogGlobal        ctermfg=229 guifg=#ffffaf
 	 highlight  verilogLabel         ctermfg=51 guifg=#00ffff
-	 highlight  verilogMethod        ctermfg=blue guifg=#5fafff
-	 highlight  verilogNumber        ctermfg=blue guifg=#5fafff
-	 highlight  verilogObject        ctermfg=252 guifg=#d0d0d0
-	 highlight  verilogOperator      ctermfg=252 guifg=#d0d0d0
+	 highlight  verilogMethod        ctermfg=186 guifg=#ebe198
+	 highlight  verilogNumber        ctermfg=151 guifg=#b5cea8
+	 highlight  verilogType          ctermfg=75 guifg=#569cd6
+	 highlight  verilogClass         ctermfg=79 guifg=#4ec9b0
+	 highlight  verilogObject        ctermfg=117 guifg=#9cdcfe
+	 highlight  verilogOperator      ctermfg=252 guifg=#d4d4d4
 	 highlight  verilogStatement     ctermfg=176 guifg=#d787d7
 	 highlight  verilogAssign        ctermfg=176 guifg=#d787d7
-	 highlight  verilogString        term=none ctermfg=228 guifg=#ffff87
+	 highlight  verilogString        term=none ctermfg=173 guifg=#ce9178
 	 highlight  verilogTypeDef       ctermfg=215 guifg=#ffaf5f
 	 highlight  verilogVariableClass ctermfg=215 guifg=#ffaf5f
-	 highlight  verilogMacro         ctermfg=229 guifg=#ffffaf
+	 highlight  verilogMacro         ctermfg=180 guifg=#dfaf87
 	 highlight  verilogNot           ctermfg=42 guifg=#00d787
 	 highlight  verilogErrorKeyword  ctermfg=235 ctermbg=red guifg=#262626 guibg=#ff0000
-     highlight  verilogConstant      cterm=bold ctermfg=13 gui=bold guifg=#ff87ff
+     highlight  verilogConstant      cterm=none ctermfg=13 gui=none guifg=#ff87ff
 	 highlight  Normal               ctermfg=252 guifg=#d0d0d0
 
 	 delcommand HiLink

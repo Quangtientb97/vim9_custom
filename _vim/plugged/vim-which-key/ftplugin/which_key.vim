@@ -26,4 +26,4 @@ let &l:statusline = which_key#statusline()
 " setlocal listchars=
 
 hi WhichKeyTrigger ctermfg=232 ctermbg=178 guifg=#333300 guibg=#ffbb7d
-hi WhichKeyName cterm=bold ctermfg=171 ctermbg=239 gui=bold guifg=#d75fd7 guibg=#4e4e4e
+hi WhichKeyName cterm=none ctermfg=171 ctermbg=239 gui=none guifg=#d75fd7 guibg=#4e4e4e

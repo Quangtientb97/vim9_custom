@@ -1,7 +1,12 @@
 "=============================================================================
 " SystemC Syntax, Dictionary & Indentation Configuration
-"=============================================================================
-execute "setlocal dictionary+=" . expand("<sfile>:p")
+let s:dict_file = expand('<sfile>:p:h:h:h') . '/dict/systemC.dict'
+if filereadable(s:dict_file)
+    execute 'setlocal dictionary+=' . fnameescape(s:dict_file)
+endif
+if exists('*snippet_engine#load_filetype')
+    call snippet_engine#load_filetype('systemC')
+endif
 
 "-----------------------------------------------------------------------------
 " 1. SystemC Syntax & Types
@@ -9,42 +14,37 @@ execute "setlocal dictionary+=" . expand("<sfile>:p")
 syn region  systemC_comment      keepend start=+\/\*+ end=+\*\/+ containedin=ALL
 syn region systemC_string start=+"+ skip=+\\"+ end=+"+ 
 
-syn match systemC_braket 	"[.;(){}]" 		containedin=ALLBUT,systemC_comment
-syn match systemC_comment 	"//.*" 			containedin=ALL
-syn match systemC_type 		"\su\d\d*\s" 	containedin=ALL,systemC_comment
-syn match systemC_type 		"\Wu\d\d*\W" 	containedin=ALL,systemC_comment,systemC_braket
+syn match systemC_braket 	"[.;]"
+syn match systemC_comment 	"//.*"
+syn match systemC_type 		"\<u\d\+\>"
+syn match systemC_type 		"\<\w\+_t\>"
 
-syn match systemC_constant 	"\s[A-Z][A-Z][A-Z]\w*"      containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_constant 	"\W[A-Z][A-Z][A-Z]\w*"      containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_funtion 		"\s\w*("                    containedin=ALLBUT,systemC_braket,systemC_comment,systemC_condition
-syn match systemC_funtion 		"\s\w*\s*("                 containedin=ALLBUT,systemC_braket,systemC_comment,systemC_condition
-syn match systemC_funtion 		"\.\w\w*("                  containedin=ALLBUT,systemC_braket,systemC_comment,systemC_condition
-syn match systemC_addr 			"[&|]"                      containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_not 			"!\w\w*"                    containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_not 			"#ifndef"                   containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_not 			"!="                        containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_not 			"\\[nr]"                    containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_not 			"%\d*[dx]"                  containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_index 		"\[\w*\]"                   containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_include 		"#\w*"                      containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_number 		"0b[01]*"                   containedin=ALLBUT,systemC_comment
-syn match systemC_property 	"->\w\w*"                   containedin=ALLBUT,systemC_comment
-syn match systemC_datatype 	"\s*sc_\w\w*"               containedin=ALLBUT,systemC_comment
-syn match systemC_len 		   "<\d\d*>"                   containedin=ALLBUT,systemC_braket,systemC_comment,systemC_string
+syn match systemC_constant 	"\<[A-Z_][A-Z0-9_]\{2,}\>"
+syn match systemC_funtion 	"\%(\*\?\s*\)\@<=\<\w\+\>\ze\s*("
+syn match systemC_funtion 	"\.\w\+\ze\s*("
+syn match systemC_addr 		"[&|]"
+syn match systemC_not 		"!\w\+"
+syn match systemC_not 		"^\s*#\s*ifndef\>"
+syn match systemC_not 		"!="
+syn match systemC_not 		"\\[nr]"
+syn match systemC_not 		"%[-+0-9]*[dx]"
+syn match systemC_index 	"\[\w\+\]"
+syn match systemC_include 	"^\s*#\s*\w\+"
+syn match systemC_include 	"^\s*#\s*include\>" nextgroup=systemC_included,systemC_string skipwhite
+syn match systemC_included 	"<[^>]\+>" contained
+syn match systemC_number 	"\<0b[01]\+\>\|\<0x[0-9a-fA-F]\+\>"
+syn match systemC_property 	"->\w\+"
+syn match systemC_datatype 	"\<sc_\w\+\>"
+syn match systemC_len 		"<\d\+>"
 
-syn match systemC_red 		   "<<"                   containedin=ALLBUT,systemC_braket,systemC_comment
-syn match systemC_red 		   "*"                   containedin=ALLBUT,systemC_braket,systemC_comment
+syn match systemC_red 		"<<"
+syn match systemC_red 		"\*"
 
-syn match systemC_number 		   "\d\d*"                   containedin=ALLBUT,systemC_braket,systemC_comment,systemC_string
+syn match systemC_number 	"\<\d\+\>"
 
-syn keyword systemC_datatype 	bool void virtual             containedin=ALLBUT,systemC_comment
-syn keyword systemC_datatype 	cout endl new int            containedin=ALLBUT,systemC_comment
-syn keyword systemC_datatype 	constant char             containedin=ALLBUT,systemC_comment
-syn keyword systemC_condition if else return do while for containedin=ALLBUT,systemC_braket,systemC_comment,systemC_include,systemC_string
-syn keyword systemC_condition class public private containedin=ALLBUT,systemC_braket,systemC_comment,systemC_include
-
-
-syn match systemC_keyword  "\s*SC_\w\w*" containedin=ALLBUT,systemC_braket,systemC_comment,systemC_include
+syn keyword systemC_datatype 	bool void virtual cout endl new int constant char
+syn keyword systemC_condition   if else return do while for class public private
+syn match systemC_keyword       "\<SC_\w\+\>"
 
 
 
@@ -60,6 +60,7 @@ highlight systemC_index     ctermfg=42
 highlight systemC_condition ctermfg=176"139
 highlight systemC_keyword   ctermfg=176
 highlight systemC_include   ctermfg=139
+highlight systemC_included  ctermfg=139
 highlight systemC_number    ctermfg=brown
 highlight systemC_property  ctermfg=215
 highlight systemC_len       ctermfg=13
@@ -69,7 +70,7 @@ highlight systemC_number       ctermfg=brown
 highlight Statement   		 ctermfg=139
 highlight Normal      		 ctermfg=254
 
-set dictionary+=~/gen_aarch32_reg/cpu.c
+silent! setlocal dictionary+=~/gen_aarch32_reg/cpu.c
 
 
 "--------------------------------"

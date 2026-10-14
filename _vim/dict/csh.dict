@@ -1,0 +1,25 @@
+"=============================================================================
+" CSH / TCSH Dictionary Keywords (autocomplete)
+"=============================================================================
+alias unalias set unset setenv unsetenv shift if then else endif while end
+foreach switch case breaksw default break continue goto source cd chdir
+pushd popd dirs echo printf exit logout which where history time wait jobs
+kill bg fg repeat eval exec complete uncomplete bindkey
+
+argv cwd home path prompt status term user shell
+curfile workdir realpath dirname hostname
+
+UVM_TESTNAME UVM_TIMEOUT UVM_VERBOSITY UVM_CONFIG_DB_TRACE
+xrun novas_pli_boot debpli timescale access
+
+
+# Snippet Triggers (Code Suggestions)
+csh_env_Ent
+csh_if_Ent
+csh_xrun_Ent
+csh_is_exist_var_Ent
+csh_is_exist_file_Ent
+csh_for_Ent
+csh_get_choice_Ent
+csh_git_prompt_Ent
+csh_git_promt_Ent

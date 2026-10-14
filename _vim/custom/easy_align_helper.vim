@@ -10,6 +10,7 @@ let g:easy_align_delimiters = {
 \ ')': { 'pattern': ')',  'left_margin': 0, 'right_margin': 0, 'stick_to_left': 1 },
 \ '[': { 'pattern': '\[', 'left_margin': 1, 'right_margin': 0, 'stick_to_left': 0 },
 \ ']': { 'pattern': '\]', 'left_margin': 0, 'right_margin': 1, 'stick_to_left': 1 },
+\ ',': { 'pattern': ',\(\s*$\)\@!', 'left_margin': 0, 'right_margin': 1, 'stick_to_left': 0 },
 \ }
 
 function! s:GetAlignBlockRange() abort
@@ -84,25 +85,92 @@ function! EasyAlignUnderCursor() abort
             let l:delim = '='
             let l:pat = l:two_char =~# '^\(<=\|==\|!=\|+=\|-=\|:=\|=>\)$' ? l:two_char : l:prev_two
         endif
-    elseif l:char =~# '^[=:,|.#\"&{}()[\] ]$'
-        let l:delim = l:char
-        let l:pat = escape(l:char, '~^$[]*\./')
-    elseif l:char =~# '^\s*$'
-        let l:delim = ' '
-        let l:pat = '\s'
-    else
-        let l:delim = '/' . escape(l:char, '/\') . '/'
-        let l:pat = escape(l:char, '~^$[]*\./')
+        let [l:start, l:end] = s:GetMatchingBlockRange(line('.'), l:pat)
+        if l:start >= l:end
+            let [l:start, l:end] = s:GetAlignBlockRange()
+        endif
+        if l:start >= l:end
+            return
+        endif
+        execute printf('%d,%dEasyAlign %s', l:start, l:end, l:delim)
+        return
     endif
 
-    let [l:start, l:end] = s:GetMatchingBlockRange(line('.'), l:pat)
-    if l:start >= l:end
-        let [l:start, l:end] = s:GetAlignBlockRange()
+    " Explicit single-character delimiters: =, :, ,, |, &, #, "
+    if l:char =~# '^[=:,|&#"]$'
+        let l:delim = l:char
+        if l:delim ==# ','
+            let l:pat = ',\(\s*$\)\@!'
+            let l:star = '* '
+        elseif l:delim ==# '|'
+            let l:pat = '|'
+            let l:star = '* '
+        else
+            let l:pat = escape(l:char, '~^$[]*\./')
+            let l:star = ''
+        endif
+
+        let [l:start, l:end] = s:GetMatchingBlockRange(line('.'), l:pat)
+        if l:start >= l:end
+            let [l:start, l:end] = s:GetAlignBlockRange()
+        endif
+        if l:start >= l:end
+            return
+        endif
+        execute printf('%d,%dEasyAlign %s%s', l:start, l:end, l:star, l:delim)
+        return
     endif
+
+    " Explicit brackets/parentheses: (, ), [, ]
+    if l:char =~# '^[()[\]]$'
+        let l:delim = l:char
+        let l:pat = escape(l:char, '~^$[]*\./')
+        let [l:start, l:end] = s:GetMatchingBlockRange(line('.'), l:pat)
+        if l:start >= l:end
+            let [l:start, l:end] = s:GetAlignBlockRange()
+        endif
+        if l:start >= l:end
+            return
+        endif
+        execute printf('%d,%dEasyAlign %s', l:start, l:end, l:delim)
+        return
+    endif
+
+    " Explicit dot delimiter (e.g. Verilog port connections .clk(clk))
+    if l:char ==# '.'
+        let l:delim = '.'
+        let l:pat = '\.'
+        let [l:start, l:end] = s:GetMatchingBlockRange(line('.'), l:pat)
+        if l:start >= l:end
+            let [l:start, l:end] = s:GetAlignBlockRange()
+        endif
+        if l:start >= l:end
+            return
+        endif
+        execute printf('%d,%dEasyAlign %s', l:start, l:end, l:delim)
+        return
+    endif
+
+    " Cursor is NOT on an explicit delimiter (e.g. on whitespace, identifier, or { / }):
+    " Auto-detect the best delimiter for the current block (same as visual mode)
+    let [l:start, l:end] = s:GetAlignBlockRange()
     if l:start >= l:end
         return
     endif
-    execute printf('%d,%dEasyAlign %s', l:start, l:end, l:delim)
+    let l:delim = s:DetectBestDelimiter(l:start, l:end)
+    let l:star = (l:delim =~# '^[,|]$') ? '* ' : ''
+    let l:pat = (l:delim ==# ',') ? ',\(\s*$\)\@!' : escape(l:delim, '~^$[]*\./')
+
+    " Narrow to matching contiguous lines if current line contains this delimiter
+    if getline('.') =~# l:pat
+        let [l:m_start, l:m_end] = s:GetMatchingBlockRange(line('.'), l:pat)
+        if l:m_start < l:m_end
+            let l:start = l:m_start
+            let l:end = l:m_end
+        endif
+    endif
+
+    execute printf('%d,%dEasyAlign %s%s', l:start, l:end, l:star, l:delim)
 endfunction
 
 function! s:DetectBestDelimiter(first_line, last_line) abort
@@ -180,12 +248,14 @@ function! s:VisualAutoAlign() abort
         let l:line = getline(l:start)
         let l:sel = l:line[col("'<") - 1 : col("'>") - 1]
         if !empty(l:sel)
-            let [l:first, l:last] = s:GetMatchingBlockRange(l:start, escape(l:sel, '~^$[]*\./'))
+            let l:pat = (l:sel ==# ',') ? ',\(\s*$\)\@!' : escape(l:sel, '~^$[]*\./')
+            let [l:first, l:last] = s:GetMatchingBlockRange(l:start, l:pat)
             if l:first < l:last
                 if l:sel =~# '^\(<=\|==\|!=\|+=\|-=\|:=\|=>\|=\)$'
                     execute printf('%d,%dEasyAlign =', l:first, l:last)
                 elseif l:sel =~# '^[=:,|.#\"&{}()[\] ]$'
-                    execute printf('%d,%dEasyAlign %s', l:first, l:last, l:sel)
+                    let l:star = (l:sel =~# '^[,|]$') ? '* ' : ''
+                    execute printf('%d,%dEasyAlign %s%s', l:first, l:last, l:star, l:sel)
                 else
                     execute printf('%d,%dEasyAlign /%s/', l:first, l:last, escape(l:sel, '/\'))
                 endif
@@ -196,7 +266,8 @@ function! s:VisualAutoAlign() abort
 
     " Case 2: user selected multiple lines (linewise V)
     let l:delim = s:DetectBestDelimiter(l:start, l:end)
-    execute printf('%d,%dEasyAlign %s', l:start, l:end, l:delim)
+    let l:star = (l:delim =~# '^[,|]$') ? '* ' : ''
+    execute printf('%d,%dEasyAlign %s%s', l:start, l:end, l:star, l:delim)
 endfunction
 
 " EasyAlign Mappings:

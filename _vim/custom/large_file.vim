@@ -17,6 +17,8 @@ function! s:OptimizeLargeFile() abort
         let b:matchup_matchparen_fallback = 0
         " Disable gitgutter diffing on large buffers
         silent! GitGutterBufferDisable
+        " Disable context.vim sticky header on large buffers
+        let b:context_enabled = 0
         " Switch slow folding methods to manual to keep scrolling smooth
         if &l:foldmethod ==# 'syntax' || &l:foldmethod ==# 'indent' || &l:foldmethod ==# 'expr'
             setlocal foldmethod=manual

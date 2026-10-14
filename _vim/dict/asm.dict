@@ -1,0 +1,42 @@
+"=============================================================================
+" Assembly (ARM / AArch64 / AArch32) Dictionary Keywords (autocomplete)
+"=============================================================================
+mov movk movz movn mvn
+ldr ldrb ldrh ldrsb ldrsh ldrsw ldur ldp
+str strb strh stur stp
+add adds sub subs adc adcs sbc sbcs
+cmp cmn tst teq
+and ands orr eor bic bics orn eon
+lsl lsr asr ror clz rbit rev
+mul madd msub smull umull sdiv udiv
+b beq bne bcs bcc bmi bpl bvs bvc bhi bls bge blt bgt ble
+bl blr bx blx ret eret
+cbz cbnz tbz tbnz
+csel cinc cinv cneg cset csetm
+mrs msr isb dsb dmb wfi wfe sev sevl nop svc hvc smc
+adr adrp
+
+.global .globl .type .size .section .text .data .bss .rodata
+.align .balign .byte .short .word .long .quad
+.ascii .asciz .string .equ .set .macro .endm
+.if .else .endif .include .file .ident .arch
+
+CNTFRQ_EL0 CNTP_CTL_EL0 CNTP_CVAL_EL0 CNTP_TVAL_EL0
+SCTLR_EL1 SCTLR_EL2 SCTLR_EL3
+TCR_EL1 TCR_EL2 TCR_EL3
+TTBR0_EL1 TTBR1_EL1 TTBR0_EL2 TTBR0_EL3
+MAIR_EL1 MAIR_EL2 MAIR_EL3
+VBAR_EL1 VBAR_EL2 VBAR_EL3
+ESR_EL1 ESR_EL2 ESR_EL3
+FAR_EL1 FAR_EL2 FAR_EL3
+SPSR_EL1 SPSR_EL2 SPSR_EL3
+ELR_EL1 ELR_EL2 ELR_EL3
+DAIF CPACR_EL1 HCR_EL2 SCR_EL3
+
+
+# Snippet Triggers (Code Suggestions)
+asm_func_read_Ent
+asm_func_write_Ent
+asm_macro_func_read_Ent
+asm_macro_func_write_Ent
+asm_print_func_aa32_Ent

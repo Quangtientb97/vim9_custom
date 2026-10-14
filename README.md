@@ -13,12 +13,12 @@ vim_custom/
 │   └── custom/
 │       ├── engineering_tools.vim
 │       ├── bottom_terminal.vim
-│       ├── breadcrumbs_scope.vim
 │       ├── cursor_highlight.vim
 │       ├── completion_editing.vim
 │       ├── which_key.vim
 │       ├── doxygen_generator.vim
 │       ├── splitjoin.vim
+│       ├── smart_selection.vim
 │       └── filetypes/
 │           ├── verilog_systemverilog.vim
 │           ├── python.vim

@@ -1,0 +1,48 @@
+"=============================================================================
+" C Dictionary Keywords (autocomplete)
+"=============================================================================
+auto break case char const continue default do double else enum extern
+float for goto if inline int long register restrict return short signed
+sizeof static struct switch typedef union unsigned void volatile while
+_Alignas _Alignof _Atomic _Bool _Complex _Generic _Imaginary _Noreturn
+_Static_assert _Thread_local
+
+int8_t int16_t int32_t int64_t
+uint8_t uint16_t uint32_t uint64_t
+int_least8_t int_least16_t int_least32_t int_least64_t
+uint_least8_t uint_least16_t uint_least32_t uint_least64_t
+int_fast8_t int_fast16_t int_fast32_t int_fast64_t
+uint_fast8_t uint_fast16_t uint_fast32_t uint_fast64_t
+intptr_t uintptr_t size_t ssize_t ptrdiff_t
+bool true false NULL
+
+printf sprintf snprintf fprintf vprintf vsprintf vsnprintf scanf sscanf
+malloc calloc realloc free
+memset memcpy memmove memcmp memchr
+strlen strcpy strncpy strcat strncat strcmp strncmp strchr strrchr strstr strtok
+atoi atol strtol strtoul strtoll strtoull atof strtod
+abs labs exit abort assert
+fopen fclose fread fwrite fseek ftell rewind fflush fgets fputs
+
+BIT0_SET BIT1_SET BIT2_SET BIT3_SET BIT4_SET BIT5_SET BIT6_SET BIT7_SET
+BIT8_SET BIT9_SET BIT10_SET BIT11_SET BIT12_SET BIT13_SET BIT14_SET BIT15_SET
+BIT16_SET BIT17_SET BIT18_SET BIT19_SET BIT20_SET BIT21_SET BIT22_SET BIT23_SET
+BIT24_SET BIT25_SET BIT26_SET BIT27_SET BIT28_SET BIT29_SET BIT30_SET BIT31_SET
+
+BIT0_CLR BIT1_CLR BIT2_CLR BIT3_CLR BIT4_CLR BIT5_CLR BIT6_CLR BIT7_CLR
+BIT8_CLR BIT9_CLR BIT10_CLR BIT11_CLR BIT12_CLR BIT13_CLR BIT14_CLR BIT15_CLR
+BIT16_CLR BIT17_CLR BIT18_CLR BIT19_CLR BIT20_CLR BIT21_CLR BIT22_CLR BIT23_CLR
+BIT24_CLR BIT25_CLR BIT26_CLR BIT27_CLR BIT28_CLR BIT29_CLR BIT30_CLR BIT31_CLR
+
+WRITE32 READ32 WRITE16 READ16 WRITE8 READ8
+csv_low csv_none csv_sim_end tube_end_sim tprintf err_code
+
+
+# Snippet Triggers (Code Suggestions)
+c_template_c_Ent
+c_template_h_Ent
+c_include_Ent
+c_macro_Ent
+c_main_Ent
+c_for_Ent
+c_func_Ent

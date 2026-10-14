@@ -13,6 +13,8 @@ set guifont=Consolas:h11
 set laststatus=2
 set linebreak
 set noswapfile
+set nobackup
+set nowritebackup
 set nowrap
 set noshowcmd
 set number
@@ -29,6 +31,7 @@ set diffopt+=iwhite
 set matchpairs+=<:>
 set visualbell
 set t_vb=
+set t_md=
 set pumheight=8
 silent! set shortmess+=c
 set complete=.,w,b,k
@@ -38,6 +41,7 @@ set updatetime=1000
 set ttimeout
 set ttimeoutlen=50
 set maxmempattern=2000000
+set synmaxcol=300
 
 " Vim 9+ optimizations (Smooth scrolling, No bell sound/flash, Fast log quickfix filter, Smart diff, Splitkeep)
 if exists('&smoothscroll')
@@ -62,18 +66,52 @@ if !has('gui_running')
     silent! execute "set <M-k>=\<Esc>k"
     silent! execute "set <M-Down>=\<Esc>[1;3B"
     silent! execute "set <M-Up>=\<Esc>[1;3A"
+    silent! execute "set <M-S-Right>=\<Esc>[1;4C"
+    silent! execute "set <M-S-Left>=\<Esc>[1;4D"
 endif
 
 " Upward recursive tag searching (searches current dir up to root)
 set tags=./tags;,tags;
+" Allow linear search in unsorted tag files (prevents E432: Tags file not sorted)
+silent! set notagbsearch
 
 if &diff
     syntax off
 endif
 
+" Markdown display settings (all code blocks in unified string color)
+let g:markdown_syntax_conceal = 0
+let g:markdown_fenced_languages = []
+
 colorscheme desert
 syntax enable
 filetype plugin indent on
+
+" Disable bold text globally across all highlight groups while preserving colors
+function! s:DisableBold() abort
+    let l:hl_out = ''
+    redir => l:hl_out
+    silent highlight
+    redir END
+    for l:line in split(l:hl_out, "\n")
+        if l:line =~# '\<bold\>'
+            let l:grp = matchstr(l:line, '^\k\+')
+            if !empty(l:grp)
+                if l:line =~# '\<underline\>'
+                    execute 'silent! highlight ' . l:grp . ' cterm=underline gui=underline term=underline'
+                else
+                    execute 'silent! highlight ' . l:grp . ' cterm=NONE gui=NONE term=NONE'
+                endif
+            endif
+        endif
+    endfor
+endfunction
+call s:DisableBold()
+
+augroup VimrcNoBold
+    autocmd!
+    autocmd ColorScheme * call s:DisableBold()
+augroup END
 
 " Statusline Powerline Arrow (1 = arrow glyph , 0 = clean flat block fallback)
 let g:powerline_arrow = 0
@@ -100,8 +138,8 @@ endif
 " Rainbow Brackets Configuration (Bracket Pair Colorization)
 let g:rainbow_active = 0
 let g:rainbow_conf = {
-\   'guifgs': ['#e4e4e4', '#5fafff', '#ff87d7', '#87d787', '#ffaf5f', '#af87ff'],
-\   'ctermfgs': [254, 75, 212, 114, 215, 141],
+\   'guifgs': ['#179fff', '#ffd710', '#da70d6', '#179fff', '#ffd710', '#da70d6'],
+\   'ctermfgs': [39, 220, 176, 39, 220, 176],
 \   'operators': '',
 \   'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/'],
 \   'separately': {
@@ -128,10 +166,22 @@ silent! call plug#begin(s:plugged_dir)
     execute 'Plug ' . string(s:plugged_dir . '/vim-which-key')
     execute 'Plug ' . string(s:plugged_dir . '/vim-startify')
     execute 'Plug ' . string(s:plugged_dir . '/vim-fugitive')
+    execute 'Plug ' . string(s:plugged_dir . '/context.vim')
     if v:version >= 900 && has('patch-9.0.0000')
         execute 'Plug ' . string(s:plugged_dir . '/fuzzyy')
     endif
 call plug#end()
+
+" context.vim (Sticky Scroll Context Header)
+let g:context_enabled = 1
+let g:context_max_height = 5
+let g:context_border_char = '─'
+let g:context_ellipsis_char = '···'
+let g:context_filetype_blacklist = [
+\   'nerdtree', 'tagbar', 'qf', 'startify', 'log', 'logfile',
+\   'fuzzyy', 'fzf', 'gitcommit', 'gitrebase', 'help',
+\   'verilog_systemverilog'
+\]
 
 "-----------------------------------------------------------------------------
 " 3. UI, Highlighting & Colors
@@ -152,7 +202,7 @@ highlight EndOfBuffer       ctermfg=240 ctermbg=none guifg=#585858 guibg=NONE
 highlight Pmenu      ctermfg=DarkGray ctermbg=233 guifg=#808080 guibg=#121212
 highlight PmenuSel   ctermfg=blue     ctermbg=233 guifg=#5fafff guibg=#121212
 highlight Search     ctermfg=black    cterm=underline ctermbg=185 guifg=#000000 guibg=#d7d75f gui=underline
-silent! highlight CurSearch  cterm=bold ctermfg=232 ctermbg=214 guifg=#1c1c1c guibg=#ffaf00 gui=bold
+silent! highlight CurSearch  cterm=none ctermfg=232 ctermbg=214 guifg=#1c1c1c guibg=#ffaf00 gui=none
 highlight PmenuThumb ctermfg=245      ctermbg=245 guifg=#8a8a8a guibg=#8a8a8a
 highlight PmenuSbar  ctermfg=240      ctermbg=240 guifg=#585858 guibg=#585858
 
@@ -216,9 +266,9 @@ let s:custom_dir = s:vim_runtime . '/custom'
 let s:custom_modules = [
     \ 'engineering_tools.vim',
     \ 'bottom_terminal.vim',
-    \ 'breadcrumbs_scope.vim',
     \ 'statusline.vim',
     \ 'cursor_highlight.vim',
+    \ 'snippet_engine.vim',
     \ 'completion_editing.vim',
     \ 'easy_align_helper.vim',
     \ 'surround.vim',
@@ -228,6 +278,8 @@ let s:custom_modules = [
     \ 'which_key.vim',
     \ 'verilog_align.vim',
     \ 'large_file.vim',
+    \ 'smart_selection.vim',
+    \ 'source_popup.vim',
 \]
 
 if v:version >= 900 && has('patch-9.0.0000')
@@ -344,6 +396,11 @@ nnoremap <silent> sc :call QuickCalc(0)<cr>
 vnoremap <silent> sc :<C-u>call QuickCalc(1)<cr>
 nnoremap <silent> sg :call ToggleGitDiff()<cr>
 nnoremap <silent> gd :call ToggleGitDiff()<cr>
+nnoremap <silent> sp :call ShowSourcePopup()<cr>
+nmap <silent> gp *<Plug>(source_popup)
+vnoremap <silent> sp :<C-u>call ShowSourcePopupVisual()<cr>
+vnoremap <silent> gp :<C-u>call ShowSourcePopupVisual()<cr>
+nnoremap <silent> st :ContextToggle<cr>
 nnoremap <silent> sh :<c-u>WhichKey '\'<CR>
 vnoremap <silent> sh :<c-u>WhichKeyVisual '\'<CR>
 nnoremap <C-w>v <C-w>v<C-w>w
@@ -386,8 +443,9 @@ endif
 nnoremap <silent> <C-_> :call Comment()<cr>
 vnoremap <silent> <C-_> :call Comment()<cr>
 
-" Header Comment Divider (F7)
-nnoremap <silent> <F7> :call AddMinus()<cr>
+" Block Comment Generator & Header Divider (F7)
+nnoremap <silent> <F7> :call BlockComment()<cr>
+vnoremap <silent> <F7> :call BlockComment()<cr>
 
 " Folding Shortcut
 nnoremap zf :call Fold()<cr>
@@ -444,6 +502,7 @@ augroup VimrcCore
     autocmd VimEnter * nested if !argc() | Startify | NERDTree | else | NERDTree | wincmd p | endif
     autocmd VimEnter * silent! nunmap cs%
     autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    autocmd BufNewFile,BufReadPre * setlocal noswapfile
 
     " CursorLine & timeout management in Insert mode
     autocmd InsertEnter * set nocul | set timeoutlen=0
@@ -466,7 +525,7 @@ augroup VimrcFiletypes
     autocmd!
     autocmd BufRead,BufNewFile *            setlocal modifiable
     autocmd BufRead,BufNewFile *.jj2        setfiletype jinja2
-    execute 'autocmd BufRead,BufNewFile *.log setlocal nomodifiable | setfiletype logfile | silent! source ' . fnameescape(s:custom_dir . '/filetypes/logfile.vim')
+    autocmd BufRead,BufNewFile *.log        setlocal nomodifiable | setfiletype logfile
     autocmd BufRead,BufNewFile Makefile*,*.make,*.mconf setfiletype make
     autocmd BufRead,BufNewFile *.lst,*.S,*tarmac* setfiletype asm
     autocmd BufRead,BufNewFile *.f,*.h,*.c  setfiletype c
@@ -525,36 +584,48 @@ augroup VimrcFileTypeSettings
                 \ | setlocal iskeyword-=-
 augroup END
 
-" Python specific window split on open
+" Python specific window split on open (guarded by filereadable)
 augroup VimrcPythonSplit
     autocmd!
     autocmd VimEnter *.py
-                \ vsplit ~/tiandir/python/tian/auto_complete.py
-                \ | wincmd H
-                \ | wincmd L
-                \ | NERDTreeClose
-                \ | vertical resize 80
-                \ | setlocal ft=python
-                \ | wincmd h
+                \ if filereadable(expand('~/tiandir/python/tian/auto_complete.py'))
+                \ |     vsplit ~/tiandir/python/tian/auto_complete.py
+                \ |     wincmd H
+                \ |     wincmd L
+                \ |     NERDTreeClose
+                \ |     vertical resize 80
+                \ |     setlocal ft=python
+                \ |     wincmd h
+                \ | endif
 augroup END
 
 "-----------------------------------------------------------------------------
 " 7. User Commands & Plugin Configurations
 "-----------------------------------------------------------------------------
-command! Compile !clear; python3 ~/tiandir/python/precomp.py %
+command! Compile if filereadable(expand('~/tiandir/python/precomp.py')) |
+            \   execute '!clear; python3 ~/tiandir/python/precomp.py ' . expand('%') |
+            \ else |
+            \   echohl WarningMsg | echo "precomp.py not found at ~/tiandir/python/precomp.py" | echohl None |
+            \ endif
 execute 'command! GoVim   vsplit ' . fnameescape(s:plugged_dir) . ' | wincmd H | wincmd L | NERDTreeClose'
 execute 'command! GoCustom vsplit ' . fnameescape(s:custom_dir) . ' | wincmd H | wincmd L | NERDTreeClose'
 command! E       e %:h
-command! GoPy    vsplit ~/tiandir/python/tian/auto_complete.py
-            \ | wincmd H
-            \ | wincmd L
-            \ | NERDTreeClose
-            \ | vertical resize 80
-            \ | wincmd h
+command! GoPy    if filereadable(expand('~/tiandir/python/tian/auto_complete.py')) |
+            \   vsplit ~/tiandir/python/tian/auto_complete.py |
+            \   wincmd H |
+            \   wincmd L |
+            \   NERDTreeClose |
+            \   vertical resize 80 |
+            \   wincmd h |
+            \ else |
+            \   echohl WarningMsg | echo "auto_complete.py not found at ~/tiandir/python/tian/auto_complete.py" | echohl None |
+            \ endif
 command! Term    call ToggleBottomTerminal()
 command! Ascii   call ShowAscii(0)
 command! Rainbow call rainbow_main#toggle()
 nnoremap <silent> srb :call rainbow_main#toggle()<cr>
+command! -nargs=? ShowDef call ShowSourcePopup(<f-args>)
+command! -nargs=? ShowSourcePopup call ShowSourcePopup(<f-args>)
 
 " Tagbar configuration for SystemVerilog
 let g:tagbar_type_verilog_systemverilog = {

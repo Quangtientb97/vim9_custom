@@ -41,9 +41,9 @@ endif
 setenv VIMINIT "source $VIM_CUSTOM_DIR/_vimrc"
 
 # Aliases for automatic application (vim, vi, vic)
-if ( -x "$HOME/.local/vim9/bin/vim" ) then
-    alias vim "$HOME/.local/vim9/bin/vim -u $VIM_CUSTOM_DIR/_vimrc"
-    alias vi  "$HOME/.local/vim9/bin/vim -u $VIM_CUSTOM_DIR/_vimrc"
+if ( -x "/mnt/users/tientq/.local/vim91/bin/vim" ) then
+    alias vim "/mnt/users/tientq/.local/vim91/bin/vim -u $VIM_CUSTOM_DIR/_vimrc"
+    alias vi  "/mnt/users/tientq/.local/vim91/bin/vim -u $VIM_CUSTOM_DIR/_vimrc"
 else
     alias vim "vim -u $VIM_CUSTOM_DIR/_vimrc"
     alias vi  "vim -u $VIM_CUSTOM_DIR/_vimrc"

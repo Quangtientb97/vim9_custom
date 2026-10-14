@@ -1,113 +1,35 @@
 "=============================================================================
 " Python Syntax, Snippets, Indent Guide & Dictionary Configuration
 "=============================================================================
-execute "setlocal dictionary+=" . expand("<sfile>:p")
+let s:dict_file = expand('<sfile>:p:h:h:h') . '/dict/python.dict'
+if filereadable(s:dict_file)
+    execute 'setlocal dictionary+=' . fnameescape(s:dict_file)
+endif
 silent! setlocal dictionary+=~/tiandir/python/tian/auto_complete.py
 
-"-----------------------------------------------------------------------------
-" 1. Python Snippets
-"-----------------------------------------------------------------------------
-inorea py_env_Ent <esc>:set formatoptions-=cro<cr>i
-            \#!/usr/bin/python3<cr>
-            \#----------------------------------------------------------------------<cr>
-            \#  File name     : <esc>:r!basename %<cr>i<bs><esc>o
-            \#  Function      : <empty><cr>
-            \#  Author        : Tian<cr>
-            \#  Email         : tientq@coasia.com<cr>
-            \#  Created time  : <esc>:r !date '+\%Y-\%m-\%d \%H:\%M:\%S'<cr>i<bs><esc>o
-            \#----------------------------------------------------------------------<cr>
-            \import re, os, argparse<cr>
-            \import sys ; sys.path.append("/home/tientq/tiandir/python/")<cr>
-            \import tian; sys.path.append(tian.user_library_path)<cr>
-            \from   tian           import this_file, this_dir<cr>
-            \<cr>
-            \# --------------------------------------------------------------------+<cr>
-            \# Function declare                                                    \|<cr>
-            \# --------------------------------------------------------------------+<cr>
-            \def get_args():<cr>
-            \parser = argparse.ArgumentParser(description="File description")<cr>
-            \# Add arguments<cr>
-            \parser.add_argument("-f", "--file", type=str, required=True, help="input file link")<cr>
-            \parser.add_argument(      "--on"  , action="store_true", required=False, help="boolean variable take True/False")<cr>
-            \return parser.parse_args()<cr>
-            \<cr>
-            \<cr>
-            \<bs># --------------------------------------------------------------------+<cr>
-            \# main                                                                \|<cr>
-            \# --------------------------------------------------------------------+<cr>
-            \def main() -> int:<cr>
-            \args = get_args()<cr>
-            \print("Start...")<cr>
-            \<cr>
-            \<cr>
-            \<bs># --------------------------------------------------------------------+<cr>
-            \# Script entry point                                                  \|<cr>
-            \# --------------------------------------------------------------------+<cr>
-            \if __name__ == "__main__":<cr>
-            \tian.time.start()<cr>
-            \rc = main()<cr>
-            \print(f"Command: 'python3 {' '.join(sys.argv)}'")<cr>
-            \tian.time.end()<cr>
-            \sys.exit(rc)<cr>
-            \<esc>:set formatoptions+=cro<cr><esc>
-
-inorea py_parallel_Ent <esc>:set formatoptions-=cro<cr>i
-            \from concurrent.futures import ThreadPoolExecutor<cr>
-            \with ThreadPoolExecutor() as executor:<cr>
-            \# Create sheets in parallel<cr>
-            \executor.map(lambda register: create_reg_sheet(workexcel, register), registers)<cr>
-            \<esc>:set formatoptions+=cro<cr>
-
-inorea py_help <esc>:set formatoptions-=cro<cr>i
-            \if (tian.argv.get_argument_by_prefix("-h")) or (len(sys.argv) == 1):<cr>
-            \    fd = os.path.dirname(__file__)<cr>
-            \    tian.run(f"cat {fd}/README")<cr><cr>
-            \<esc>:set formatoptions+=cro<cr>
-
-inorea py_try_Ent <esc>:set formatoptions-=cro<cr>i
-            \try:<cr>
-            \__fill()<cr>
-            \except Exception as e:<cr>
-            \print("Error:", e)<cr>
-            \<esc>:set formatoptions+=cro<cr>
-
-inorea py_excel_Ent <esc>:set formatoptions-=cro<cr>i
-            \tian.excel.create_excel_file("__fill")<cr>
-            \workexcel = tian.excel("__fill")<cr>
-            \workbook  = tian.wb<cr>
-            \#workexcel.create_sheet("Summary")<cr>
-            \#workexcel.remove_sheet("Sheet")<cr>
-            \<esc>:set formatoptions+=cro<cr>
-
-inorea py_tqdm_Ent <esc>:set formatoptions-=cro<cr>i
-            \from tqdm import tqdm<cr>
-            \pbar = tqdm(__fill, bar_format="{n_fmt}/{total_fmt} \| {desc}")<cr>
-            \pbar.set_description("Processing...")<cr>
-            \<esc>:set formatoptions+=cro<cr>
+" Load snippets from snipet/python/
+if exists('*snippet_engine#load_filetype')
+    call snippet_engine#load_filetype('python')
+endif
 
 "-----------------------------------------------------------------------------
 " 2. Python Syntax Highlighting
 "-----------------------------------------------------------------------------
 syn match     python_not         "{\w*"                         containedin=pythonString
 syn match     python_not         "}"                            containedin=pythonString
-syn match     python_braket      "[;()={}.]"                    containedin=ALLBUT,pythonString,python_not,pythonComment,pythonString
-syn match     python_function    "\.\w*("                       containedin=ALLBUT,python_braket,pythonString,pythonComment
-syn match     python_function    "\s\w*("                       containedin=ALLBUT,python_braket,pythonString,pythonComment
-syn match     python_function    "^\w\w*("                      containedin=ALLBUT,python_braket,pythonString,pythonComment
-syn match     python_constant    "\s[A-Z][A-Z][A-Z_0-9]*\s"     containedin=ALLBUT,pythonString,python_not,pythonComment
-syn match     python_not         "!="                           containedin=ALLBUT,pythonComment
-syn match     python_not         "\[\w*\]"                      containedin=ALLBUT,pythonComment
-syn match     python_not         "\\n"                          containedin=ALLBUT,pythonComment
-syn match     python_constant    "__\d\d*__"                    containedin=pythonString
+syn match     python_braket      "[;()={}.]"
+syn match     python_function    "\%(\.\s*\)\?\<\w\+\>\ze\s*("
+syn match     python_constant    "\<[A-Z_][A-Z0-9_]\{2,}\>"
+syn match     python_not         "!="
+syn match     python_not         "\[\w*\]"
+syn match     python_not         "\\n"
+syn match     python_constant    "__\d\+__"                     containedin=pythonString
 syn match     python_fmtspec     "%[-]*\d*[sxdYMSHm]"           containedin=pythonString
-syn match     python_bw          '\.\w\w*\.'                    containedin=ALLBUT,pythonString,pythonComment
-syn match     python_csh_var     "$\w\w*"                       containedin=pythonString
+syn match     python_bw          '\.\w\+\.'
+syn match     python_csh_var     "\$\w\+"                       containedin=pythonString
 
-
-syn keyword   python_obj         self                           containedin=ALLBUT,pythonString
-syn keyword   python_csh_cmd     echo rm mkdir cp xrun cd       containedin=pythonString
-syn keyword   python_csh_cmd     mv                             containedin=pythonString
-
+syn keyword   python_obj         self
+syn keyword   python_csh_cmd     echo rm mkdir cp xrun cd mv    containedin=pythonString
 
 highlight python_function  ctermfg=blue
 highlight python_braket    ctermfg=252
@@ -120,8 +42,6 @@ highlight python_bw        ctermfg=252
 highlight python_obj       ctermfg=3
 highlight python_csh_cmd   ctermfg=13
 highlight python_csh_var   ctermfg=blue
-
-
 
 "-----------------------------------------------------------------------------
 " 3. IndentLine Guide (show_tab)

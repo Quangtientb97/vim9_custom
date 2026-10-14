@@ -1,0 +1,12 @@
+"=============================================================================
+" LISA / LISA+ Dictionary Keywords (autocomplete)
+"=============================================================================
+component subcomponent protocol connection composition properties resources
+behavior ports includes implements instantiates parameter port master slave
+in out pipeline register memory int uint32_t uint64_t bool void string
+map_range address_space read write reset init terminate
+
+
+# Snippet Triggers (Code Suggestions)
+lisa_component_Ent
+lisa_protocol_Ent

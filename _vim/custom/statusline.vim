@@ -1,5 +1,5 @@
 "=============================================================================
-" Custom Statusline with Powerline Arrow & Scope Breadcrumbs
+" Custom Statusline with Powerline Arrow
 " Supports both Powerline glyphs () and clean flat rectangular fallback
 " Compatible with Vim 7.4, 8.x, and 9.x
 "=============================================================================
@@ -110,7 +110,6 @@ function! CustomStatusLine(active) abort
     endif
 
     let l:s = l:arrow ? '%#StatusLineFileActive# %<%t%m%r %#StatusLineFileSep#' : '%#StatusLineFileActive# %<%t%m%r '
-    let l:s .= '%#StatusLineScope#%{BreadcrumbScope()} '
     let l:s .= '%#StatusLineBase#%='
     let l:s .= '%#StatusLineWarn#%{StatusLineFileFormat()}'
     let l:s .= '%#StatusLineSearch#%{StatusLineSearchCount()}'
@@ -149,7 +148,7 @@ augroup StatusLineFocus
 augroup END
 
 " 6. Statusline Palette (Powerline Khaki & Slate Theme)
-highlight StatusLineFileActive  cterm=bold ctermfg=234 ctermbg=137 guifg=#232323 guibg=#9e8d78 gui=bold
+highlight StatusLineFileActive  cterm=none ctermfg=234 ctermbg=137 guifg=#232323 guibg=#9e8d78 gui=none
 highlight StatusLineFileSep     cterm=none ctermfg=137 ctermbg=236 guifg=#9e8d78 guibg=#282c34 gui=none
 
 highlight StatusLineNCFile      cterm=none ctermfg=244 ctermbg=237 guifg=#808080 guibg=#333842 gui=none
@@ -157,13 +156,13 @@ highlight StatusLineNCFileSep   cterm=none ctermfg=237 ctermbg=235 guifg=#333842
 
 highlight StatusLineScope       cterm=none ctermfg=250 ctermbg=236 guifg=#abb2bf guibg=#282c34 gui=none
 highlight StatusLineBase        cterm=none ctermfg=244 ctermbg=236 guifg=#5c6370 guibg=#282c34 gui=none
-highlight StatusLineWarn        cterm=bold ctermfg=white ctermbg=167 guifg=#ffffff guibg=#e06c75 gui=bold
+highlight StatusLineWarn        cterm=none ctermfg=white ctermbg=167 guifg=#ffffff guibg=#e06c75 gui=none
 highlight StatusLineSearch      cterm=none ctermfg=186 ctermbg=236 guifg=#e5c07b guibg=#282c34 gui=none
-highlight StatusLineVisual      cterm=bold ctermfg=234 ctermbg=75  guifg=#232323 guibg=#61afef gui=bold
+highlight StatusLineVisual      cterm=none ctermfg=234 ctermbg=75  guifg=#232323 guibg=#61afef gui=none
 highlight StatusLineInfo        cterm=none ctermfg=248 ctermbg=236 guifg=#abb2bf guibg=#282c34 gui=none
 highlight StatusLinePos         cterm=none ctermfg=250 ctermbg=236 guifg=#d0d0d0 guibg=#282c34 gui=none
 
-highlight StatusLineNERDTree    cterm=bold ctermfg=234 ctermbg=137 guifg=#232323 guibg=#9e8d78 gui=bold
+highlight StatusLineNERDTree    cterm=none ctermfg=234 ctermbg=137 guifg=#232323 guibg=#9e8d78 gui=none
 highlight StatusLineNERDTreeSep cterm=none ctermfg=137 ctermbg=236 guifg=#9e8d78 guibg=#282c34 gui=none
 highlight StatusLineNERDTreeNC  cterm=none ctermfg=244 ctermbg=237 guifg=#808080 guibg=#333842 gui=none
 highlight StatusLineNERDTreeNCSep cterm=none ctermfg=237 ctermbg=235 guifg=#333842 guibg=#21252b gui=none

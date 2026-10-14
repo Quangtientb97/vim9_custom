@@ -1,6 +1,13 @@
 "=============================================================================
 " UPF (Unified Power Format) Syntax Configuration
 "=============================================================================
+let s:dict_file = expand('<sfile>:p:h:h:h') . '/dict/upf.dict'
+if filereadable(s:dict_file)
+    execute 'setlocal dictionary+=' . fnameescape(s:dict_file)
+endif
+if exists('*snippet_engine#load_filetype')
+    call snippet_engine#load_filetype('upf')
+endif
 syn match upf_statement "set_\w*"
 syn match upf_statement "create_\w*"
 syn match upf_statement "connect_\w*"

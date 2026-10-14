@@ -1,0 +1,21 @@
+"=============================================================================
+" Jinja2 Dictionary Keywords (autocomplete)
+"=============================================================================
+for endfor in if elif else endif set endset block endblock extends include
+import from as macro endmacro call endcall filter endfilter raw endraw
+autoescape endautoescape with endwith
+
+abs attr batch capitalize center default dictsort escape filesizeformat
+first float format groupby indent int join last length list lower map
+max min pprint random reject rejectattr replace reverse round safe
+select selectattr slice sort string striptags sum title tojson trim
+truncate unique upper urlencode urlize wordcount wordwrap
+
+defined undefined even odd divisibleby iterable none number sequence
+sameas mapping
+
+
+# Snippet Triggers (Code Suggestions)
+jj2_for_Ent
+jj2_if_Ent
+jj2_set_Ent

@@ -84,10 +84,10 @@ let s:verilog_function_task_dequalifier =
 
 let g:verilog_syntax = {
       \ 'assign'      : [{
-                        \ 'match_start' : '[^><=!]\zs<\?=\%(=\)\@!',
-                        \ 'match_end'   : '[;,]',
+                        \ 'match_start' : '[^><=!]\@<=<\?=\%(=\)\@!',
+                        \ 'match_end'   : '\ze[)\]]\|[;,]',
                         \ 'highlight'   : 'verilogOperator',
-                        \ 'syn_argument': 'transparent contains=@verilogBaseCluster',
+                        \ 'syn_argument': 'transparent',
                         \ }],
       \ 'attribute'   : [{
                         \ 'match_start' : '\%(@\s*\)\@<!(\*',
@@ -96,7 +96,7 @@ let g:verilog_syntax = {
                         \ 'syn_argument': 'transparent keepend contains=verilogComment,verilogNumber,verilogOperator,verilogString',
                         \ }],
       \ 'baseCluster' : [{
-                        \ 'cluster'     : 'verilogComment,verilogNumber,verilogOperator,verilogString,verilogConstant,verilogGlobal,verilogMethod,verilogObject,verilogConditional,verilogIfdefContainer'
+                        \ 'cluster'     : 'verilogComment,verilogNumber,verilogOperator,verilogString,verilogConstant,verilogGlobal,verilogMethod,verilogObject,verilogConditional,verilogIfdefContainer,verilogUvm,verilogProperty,verilogRoundbracket,verilogAndor,verilogMacro'
                         \ }],
       \ 'block'       : [{
                         \ 'match_start' : '\<begin\>',

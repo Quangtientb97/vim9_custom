@@ -1,0 +1,24 @@
+"=============================================================================
+" Makefile Dictionary Keywords (autocomplete)
+"=============================================================================
+ifeq ifneq ifdef ifndef else endif include -include sinclude override export
+unexport define endef undefine private vpath load
+
+subst patsubst strip findstring filter filter-out sort word words wordlist
+firstword lastword dir notdir suffix basename addsuffix addprefix join
+wildcard realpath abspath error warning info origin flavor foreach if or
+and call eval file value shell
+
+.PHONY .DEFAULT_GOAL .PRECIOUS .SECONDARY .INTERMEDIATE .SILENT .IGNORE
+.EXPORT_ALL_VARIABLES .NOTPARALLEL .ONESHELL .POSIX
+
+echo mkdir make cd rm chmod sed pwd cp bsub ssh xrun
+
+
+# Snippet Triggers (Code Suggestions)
+if_makefile_Ent
+if_bash_in_makefile_Ent
+if_exists_dir_bash_in_makefile_Ent
+if_exits_dir_bash_in_makefile_Ent
+for_bash_in_makefile_Ent
+echo_Ent

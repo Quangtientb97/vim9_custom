@@ -1,0 +1,14 @@
+"=============================================================================
+" XML Dictionary Keywords (autocomplete)
+"=============================================================================
+xml version encoding standalone DOCTYPE ELEMENT ATTLIST ENTITY NOTATION
+CDATA ID IDREF IDREFS NMTOKEN NMTOKENS REQUIRED IMPLIED FIXED
+component property name value type description param config item
+enabled disabled true false string integer boolean default
+schema xmlns targetNamespace elementFormDefault attributeFormDefault
+xs:schema xs:element xs:complexType xs:sequence xs:string xs:integer
+
+
+# Snippet Triggers (Code Suggestions)
+xml_template_Ent
+xml_tag_Ent

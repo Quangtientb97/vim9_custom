@@ -1,0 +1,23 @@
+"=============================================================================
+" TCL Dictionary Keywords (autocomplete)
+"=============================================================================
+after append apply array bgerror binary break catch cd chan clock close
+concat continue dde dict encoding eof error eval exec exit expr fblocked
+fconfigure fcopy file fileevent flush for foreach format gets glob global
+history http if incr info interp join lappend lassign lindex linsert list
+llength lmap load lrange lrepeat lreplace lreverse lsearch lset lsort memory
+msgcat my namespace next nextto open package parray pid pkg::create platform
+platform::shell proc puts pwd read refchan regexp regsub rename return
+safe scan seek self self set socket source split string subst switch
+tailcall tclLog tcl_endOfWord tcl_findLibrary tcl_startOfNextWord
+tcl_startOfPreviousWord tcl_wordBreakAfter tcl_wordBreakBefore tell time
+trace unknown unload unset update uplevel upvar variable vwait while yield
+yieldto oo::class oo::copy oo::define oo::objdefine oo::object
+
+force run value stop find scope ports add_wave dump_wave get_pins get_nets
+get_ports get_cells get_clocks set_property get_property
+
+
+# Snippet Triggers (Code Suggestions)
+tcl_write_file_Ent
+tcl_find_port_Ent

@@ -1,3 +1,8 @@
+let s:dict_file = expand('<sfile>:p:h:h:h') . '/dict/asm.dict'
+if filereadable(s:dict_file)
+    execute 'setlocal dictionary+=' . fnameescape(s:dict_file)
+endif
+
 syntax clear
 
 syn keyword asm_keyword adc adcs add addcc addeq addge addgt addle addls addlt addne addpl adds and andcc andeq andgt containedin=ALLBUT, asm_comment 
@@ -31,25 +36,22 @@ syn keyword asm_keyword STRCC STRD STREQ STRGE STRGT STRH STRHEQ STRHI STRHLT ST
 syn keyword asm_keyword SUBEQ SUBGT SUBLE SUBNE SUBS SUBSEQ SVC TEQ TEQEQ TEQNE TST UBFX UDIV UDIVEQ UMLAL UMULL UXTAH UXTB CONTAINEDIN=ALLBUT, ASM_COMMENT 
 syn keyword asm_keyword UXTBNE UXTH VMOV VMSR WFI BS RET
 
-syn match asm_block      "^\w\w*:"         containedin=ALLBUT,asm_comment
-syn match asm_num        "\s[0-9a-z]*\s"   containedin=ALLBUT,asm_comment,asm_addr,asm_keyword
-syn match asm_num        "^[0-9a-z]*\s"    containedin=ALLBUT,asm_comment,asm_addr,asm_keyword
-syn match asm_num        "\s0x[0-9abcdefABCDEF]*$"  containedin=ALLBUT,asm_comment,asm_addr,asm_keyword
-syn match asm_comment    ";.*"             containedin=ALL
-syn match asm_comment    "//.*"            containedin=ALL
-syn match asm_type_data  "\.\w*"           containedin=ALL,asm_comment
-"syn match asm_addr       "\w*:"            containedin=ALL,asm_comment
-syn match asm_in_braket  "{.*}"            containedin=ALLBUT,asm_comment
-syn match asm_in_braket  "\[.*\]"          containedin=ALLBUT,asm_comment,asm_function
-syn match asm_function   "<.*>"            containedin=ALLBUT,asm_comment
-syn match asm_constant   "#\w*"            containedin=ALLBUT,asm_comment,asm_string
-syn match asm_constant   "#0x[0-9a-fA-F]*" containedin=ALLBUT,asm_comment
-syn match asm_constant   "#-\d*"           containedin=ALLBUT,asm_comment
-syn match asm_string     "\".*\""          containedin=ALLBUT,asm_comment
-syn match asm_string     "%\w*"            containedin=ALLBUT,asm_comment
-syn match asm_string     "=\w*"            containedin=ALLBUT,asm_comment
-syn match asm_constant   "\s[A-Z_][A-Z0-9_][A-Z0-9_][A-Z0-9_]*"            containedin=ALLBUT,asm_comment
-syn match asm_num        "\sx[0-9]"        containedin=ALLBUT,asm_comment
+syn match asm_block      "^\w\+:"
+syn match asm_num        "\s[0-9a-zA-Z]\+\s"
+syn match asm_num        "^[0-9a-zA-Z]\+\s"
+syn match asm_num        "\s0x[0-9a-fA-F]\+$"
+syn match asm_comment    ";.*"
+syn match asm_comment    "//.*"
+syn match asm_type_data  "\.\w\+"
+syn match asm_in_braket  "{[^}]*}"
+syn match asm_in_braket  "\[[^\]]*\]"
+syn match asm_function   "<[^>]*>"
+syn match asm_constant   "#-\?\w\+"
+syn region asm_string    start=+"+ skip=+\\"+ end=+"+
+syn match asm_string     "%\w\+"
+syn match asm_string     "=\w\+"
+syn match asm_constant   "\<[A-Z_][A-Z0-9_]\{2,}\>"
+syn match asm_num        "\<[xw][0-9]\+\>"
 
 highlight   asm_num         ctermfg=blue
 highlight   asm_comment     ctermfg=107
@@ -63,53 +65,7 @@ highlight   asm_constant    ctermfg=139
 highlight   asm_block       ctermfg=darkcyan
 highlight   asm_string      ctermfg=215
 
-inorea asm_func_read_Ent <esc>:set formatoptions-=cro<cr>i
-            \.global read__f_func_name<cr>
-            \.type read__f_func_name, "function"<cr>
-            \read__f_func_name:<cr>
-            \    mrs x0, CNTFRQ_EL0<cr>
-            \    ret<cr>
-            \<esc>=:set formatoptions+=cro<cr>/__f\w*<cr>
-
-inorea asm_func_write_Ent <esc>:set formatoptions-=cro<cr>i
-            \.global write__f_func_name<cr>
-            \.type write__f_func_name, "function"<cr>
-            \write__f_func_name:<cr>
-            \    msr CNTFRQ_EL0, x0<cr>
-            \    ret<cr>
-            \<esc>=:set formatoptions+=cro<cr>/__f\w*<cr>
-
-inorea asm_macro_func_read_Ent <esc>:set formatoptions-=cro<cr>i
-            \.macro READ_FUNC sysreg<cr>
-            \.global read_\sysreg<cr>
-            \.type read_\sysreg, "function"<cr>
-            \read_\sysreg:<cr>
-            \    mrs x0, \sysreg<cr>
-            \    ret<cr>
-            \.endm<cr>
-            \<esc>=:set formatoptions+=cro<cr>/__f\w*<cr>
-
-inorea asm_macro_func_write_Ent <esc>:set formatoptions-=cro<cr>i
-            \.macro WRITE_FUNC sysreg<cr>
-            \.global write_\sysreg<cr>
-            \.type write_\sysreg, "function"<cr>
-            \write_\sysreg:<cr>
-            \    mrs \sysreg, x0<cr>
-            \    ret<cr>
-            \.endm<cr>
-            \<esc>=:set formatoptions+=cro<cr>/__f\w*<cr>
-
-inorea asm_print_func_aa32_Ent <esc>:set formatoptions-=cro<cr>i
-            \print_string:<cr>
-            \    mov r1, #0x13000000  // TUBE address<cr>
-            \1:<cr>
-            \    ldrb r2, [r0], #1    // Load byte from string and increment pointer<cr>
-            \    cmp r2, #0           // Check for null terminator<cr>
-            \    beq done             // If null, return<cr>
-            \    strb r2, [r1]        // Store byte to TUBE<cr>
-            \    b 1f                 // Repeat<cr>
-            \2:<cr>
-            \    bx lr                // Return<cr>
-            \el_message:<cr>
-            \    .asciz "THis is EL = \n"<cr>
-            \<esc>=:set formatoptions+=cro<cr>/__f\w*<cr>
+" Load snippets from snipet/asm/
+if exists('*snippet_engine#load_filetype')
+    call snippet_engine#load_filetype('asm')
+endif

@@ -76,15 +76,15 @@ syn match log_Pass "\<\%(TEST\|SIMULATION\|VERIFICATION\|CHECK\)\s\+\%(PASSED\|S
 highlight default log_Hierachy  ctermfg=blue          guifg=#5fafff
 highlight default log_Link      ctermfg=blue          guifg=#5fafff
 highlight default log_Info      cterm=underline       ctermfg=blue     guifg=#5fafff gui=underline
-highlight default log_Error     cterm=bold,underline  ctermfg=196      guifg=#ff5f5f gui=bold,underline
-highlight default log_Fatal     cterm=bold,underline  ctermfg=176      guifg=#d787d7 gui=bold,underline
+highlight default log_Error     cterm=underline       ctermfg=196      guifg=#ff5f5f gui=underline
+highlight default log_Fatal     cterm=underline       ctermfg=176      guifg=#d787d7 gui=underline
 highlight default log_Waring    cterm=underline       ctermfg=228      guifg=#ffff87 gui=underline
 highlight default log_Time      ctermfg=blue          guifg=#5fafff
 highlight default log_Id        ctermfg=brown         guifg=#af875f
 highlight default log_Source_sv ctermfg=249           guifg=#b2b2b2
 highlight default log_Index     ctermfg=215           guifg=#ffaf5f
 highlight default log_Num       ctermfg=blue          guifg=#5fafff
-highlight default log_Pass      cterm=bold            ctermfg=114      guifg=#87d787 gui=bold
+highlight default log_Pass      cterm=none            ctermfg=114      guifg=#87d787 gui=none
 
 " 4. Buffer-local Navigation Shortcuts for Log Review
 " ]e / [e : Jump to Next / Previous Error or Fatal
