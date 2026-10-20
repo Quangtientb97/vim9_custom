@@ -15,9 +15,9 @@ syn region  jinja2_var       start =+{{+ end=+}}+
 syn region  jinja2_statement start =+{%+ end=+%}+
 syn region  jinja2_comment   start =+{#+ end=+#}+
 
-highlight jinja2_var       ctermfg=42
-highlight jinja2_statement ctermfg=176
-highlight jinja2_comment   ctermfg=107
+highlight jinja2_var       ctermfg=42  guifg=#00d787
+highlight jinja2_statement ctermfg=176 guifg=#d787d7
+highlight jinja2_comment   ctermfg=107 guifg=#6a9955
 
 "syn keyword jj2_statement for in if endif endfor set containedin=jinja2_statement
 "highlight jj2_statement   ctermfg=3

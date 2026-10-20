@@ -7,6 +7,9 @@ if filereadable(s:dict_file)
 endif
 silent! setlocal dictionary+=~/tiandir/sv/tian_pkg/tian_macros.svh
 
+" Disable indent for preprocessor directives (`ifndef, `ifdef, `else, etc.)
+let b:verilog_disable_indent_lst = 'eos,standalone,preproc'
+
 " Load snippets from snipet/verilog_systemverilog.vim
 if exists('*snippet_engine#load_filetype')
     call snippet_engine#load_filetype('verilog_systemverilog')
@@ -19,9 +22,9 @@ syn match   verilogFormat      "\%(0x\)\?%[-+0-9#]*\%(\.[0-9]*\)\?[hHxXdDbBoOcCs
 syn match   verilogEscape      +\\["\\abfnrtv0]+ contained
 syn match   verilogEscape      "\\\o\o\=\o\=" contained
 syn region  verilogString      start=+"+ skip=+\\"+ end=+"+ contains=verilogEscape,verilogFormat,@Spell
-highlight   verilogString      term=none ctermfg=173 guifg=#ce9178
-highlight   verilogFormat      ctermfg=179 guifg=#d7ba7d
-highlight   verilogEscape      ctermfg=179 guifg=#d7ba7d
+highlight   verilogString      term=none ctermfg=174 guifg=#d29a83
+highlight   verilogFormat      ctermfg=180 guifg=#dbc088
+highlight   verilogEscape      ctermfg=180 guifg=#dbc088
 
 " Base identifier match for all variables (e.g. i, nbytes, gp, bus_item, rw)
 syn match   verilogVariable     "\<[a-zA-Z_][a-zA-Z0-9_$]*\>"
@@ -29,7 +32,8 @@ syn match   verilogVariable     "\<[a-zA-Z_][a-zA-Z0-9_$]*\>"
 " Constants and enum literals (e.g. UVM_PORT, UVM_UNBOUNDED_CONNECTIONS, UVM_WRITE, UVM_READ)
 syn match   verilogConstant     "\<[A-Z][A-Z0-9_$]*\>"
 syn match   verilogConstant     "\<_[A-Z0-9_$]*\>"
-highlight   verilogConstant     cterm=none ctermfg=13 gui=none guifg=#ff87ff
+highlight   verilogConstant     cterm=none ctermfg=13 gui=none guifg=#9170cb
+highlight! link Constant        verilogConstant
 
 " Function, task, class, and statement keywords
 syn match   verilogStatement    "\<\(function\|task\|class\|endfunction\|endtask\|endclass\)\>"
@@ -39,7 +43,7 @@ syn match   verilogUvm          "\<uvm_\k\+\>"
 syn match   verilogUvm          "\<\k\+_t\>"
 syn match   verilogUvm          "\<\k\+_c\>"
 syn match   verilogUvm          "\<\k\+_e\>"
-highlight   verilogUvm          ctermfg=75 guifg=#569cd6
+highlight   verilogUvm          ctermfg=75 guifg=#63a3d9
 
 " Class declaration and inheritance names highlighted in teal (#4ec9b0) strictly on same-line keywords
 silent! syn clear verilogClass
@@ -47,20 +51,20 @@ syn match   verilogClass        "\%(\<class\s\+\)\@<=[a-zA-Z_]\w*"
 syn match   verilogClass        "\%(\<extends\s\+\)\@<=[a-zA-Z_]\w*"
 syn match   verilogClass        "\%(\<implements\s\+\)\@<=[a-zA-Z_]\w*"
 syn match   verilogClass        "\%(\<covergroup\s\+\)\@<=[a-zA-Z_]\w*"
-highlight   verilogClass        ctermfg=79 guifg=#4ec9b0
+highlight   verilogClass        ctermfg=79 guifg=#5acdb5
 
 " Covergroup definition keywords (covergroup, endgroup) highlighted in soft yellow (#dcdcaa) matching VS Code
 syn match   verilogCovergroup   "\<\(covergroup\|endgroup\)\>"
 syn region  verilogCovergroupRegion matchgroup=verilogCovergroup start="\<covergroup\>" end="\<endgroup\>" transparent keepend
-highlight   verilogCovergroup   ctermfg=186 guifg=#dcdcaa
+highlight   verilogCovergroup   ctermfg=186 guifg=#e0e0b4
 
 " Coverpoint and cross labels before colon highlighted in teal (#4ec9b0)
 syn match   verilogCoverpointLabel "\<[a-zA-Z_]\w*\ze\s*:\s*\%(coverpoint\|cross\)\>"
-highlight   verilogCoverpointLabel ctermfg=79 guifg=#4ec9b0
+highlight   verilogCoverpointLabel ctermfg=79 guifg=#5acdb5
 
 " Coverage keywords (coverpoint, cross, bins, etc.) highlighted in pink (#d787d7)
 syn match   verilogCoverpoint   "\<\(coverpoint\|cross\|bins\|binsof\|illegal_bins\|ignore_bins\)\>"
-highlight   verilogCoverpoint   ctermfg=176 guifg=#d787d7
+highlight   verilogCoverpoint   ctermfg=176 guifg=#db92db
 
 " Dot-preceded member properties (e.g. gp.m_byte_enable, rw.addr)
 syn match   verilogProperty     "\.\k\+" contains=verilogMethodDot
@@ -83,7 +87,7 @@ syn match   verilogMethod       "\$[a-zA-Z0-9_$]\+\ze\s*("
 syn match   verilogMacro        "\$cast\>"
 syn match   verilogMacro        "\$cast\ze\s*("
 syn match   verilogMacro        "`[a-zA-Z0-9_$]\+\>"
-highlight   verilogMacro        ctermfg=180 guifg=#dfaf87
+highlight   verilogMacro        ctermfg=180 guifg=#e2b793
 
 " Scope resolution operator and scope members (e.g. uvm_tlm_gp::type_id::create)
 syn match   verilogOperator     "::" contained
@@ -94,12 +98,12 @@ syn match   verilogScopeType    "\<\w\+\ze::" contains=verilogOperator
 syn keyword verilogMethod       create
 
 highlight default link verilogScopeMethod verilogMethod
-highlight   verilogScopeType    ctermfg=79 guifg=#4ec9b0
+highlight   verilogScopeType    ctermfg=79 guifg=#5acdb5
 
 " Variables and properties highlighted in light sky blue (#9cdcfe) matching VS Code
-highlight   verilogVariable     ctermfg=117 guifg=#9cdcfe
-highlight   verilogObject       ctermfg=117 guifg=#9cdcfe
-highlight   verilogProperty     ctermfg=117 guifg=#9cdcfe
+highlight   verilogVariable     ctermfg=117 guifg=#aae1fe
+highlight   verilogObject       ctermfg=117 guifg=#aae1fe
+highlight   verilogProperty     ctermfg=117 guifg=#aae1fe
 
 " Include statements, scope items, objects, properties, constants, types, numbers, and covergroups in base cluster for assignments
 syn cluster verilogBaseCluster add=verilogStatement,verilogNot,verilogScopeMethod,verilogScopeType,verilogClass,verilogCovergroup,verilogCoverpointLabel,verilogCoverpoint,verilogUvm,verilogObject,verilogProperty,verilogVariable,verilogConstant,verilogType,verilogNumber
@@ -109,7 +113,7 @@ syn region  verilogAssign       matchgroup=verilogOperator start="[^><=!]\@<=<\?
 
 " Built-in types, modifiers, and keywords highlighted in dark blue (#569cd6) matching VS Code
 syn keyword verilogType        input output inout virtual void bit int logic byte longint shortint integer string time null disable reg wire real shortreal chandle parameter posedge negedge boolean True False
-highlight   verilogType        ctermfg=75 guifg=#569cd6
+highlight   verilogType        ctermfg=75 guifg=#63a3d9
 
 " Numeric constants and literals highlighted in mint green (#b5cea8) matching VS Code
 syn match   verilogNumber      "\(\d\+\)\?'[sS]\?[bB]\s*[0-1_xXzZ?]\+"
@@ -120,11 +124,11 @@ syn match   verilogNumber      "\<[+-]\?[0-9_]\+\(\.[0-9_]*\)\?\(e[0-9_]*\)\?\>"
 syn match   verilogNumber      "\<\d[0-9_]*\(\.[0-9_]\+\)\=\([fpnum]\)\=s\>"
 syn match   verilogNumber      "\<0[xX][0-9a-fA-F_]\+\>"
 syn keyword verilogNumber      1step
-highlight   verilogNumber      ctermfg=151 guifg=#b5cea8
+highlight   verilogNumber      ctermfg=151 guifg=#bdd3b1
 
 " Functions and methods highlighted in balanced soft yellow (#ebe198)
-highlight   verilogMethod      ctermfg=186 guifg=#ebe198
+highlight   verilogMethod      ctermfg=186 guifg=#ede4a4
 
 " Punctuation marks (; , :), delimiters, and operators softened to match VS Code Dark+ (#d4d4d4)
-highlight   verilogRoundbracket ctermfg=252 guifg=#d4d4d4
-highlight   verilogOperator     ctermfg=252 guifg=#d4d4d4
+highlight   verilogRoundbracket ctermfg=253 guifg=#dbdbdb
+highlight   verilogOperator     ctermfg=253 guifg=#dbdbdb

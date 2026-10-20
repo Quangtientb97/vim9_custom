@@ -21,19 +21,19 @@ syn keyword asm_keyword subeq subgt suble subne subs subseq svc teq teqeq teqne 
 syn keyword asm_keyword uxtbne uxth vmov vmsr wfi bs ret
 syn keyword asm_keyword mrs msr adr dc csel containedin=ALLBUT,asm_comment
 
-syn keyword asm_keyword ADC ADCS ADD ADDCC ADDEQ ADDGE ADDGT ADDLE ADDLS ADDLT ADDNE ADDPL ADDS AND ANDCC ANDEQ ANDGT CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword ANDHI ANDLE ANDLS ANDNE ANDS ANDSNE ASR ASRCS ASRS B BCC BCS BEQ BFI BGE BGT BHI BIC BICEQ BICGE CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword BICHI BICLT BICNE BL BLE BLEQ BLS BLT BLX BMI BNE BPL BX BXEQ BXLS BXNE C CBNZ CBZ CLZ CMN CMNMI CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword CMP CMPCS CMPEQ CMPHI CMPNE CMPPL CPSIE DSB EOR EOREQ EORNE ISB IT ITT LDM LDMDB LDMEQ LDMIB LDR CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword LDRB LDRBEQ LDRBNE LDRCC LDRD LDREQ LDRGE LDRGT LDRH LDRHEQ LDRHI LDRHLT LDRHNE LDRLE LDRLS LDRLT CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword LDRNE LDRSH LSL LSLCC LSLCS LSLEQ LSLGT LSLLE LSLLS LSLNE LSLS LSR LSRCC LSREQ LSRHI LSRLS LSRNE CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword LSRS LSRSEQ MCR MCRR MLA MLS MOV MOVCC MOVCS MOVEQ MOVGE MOVGT MOVHI MOVLE MOVLS MOVLT MOVMI MOVNE CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword MOVPL MOVS MOVT MOVTLE MOVTNE MOVW MOVWLE MOVWNE MRC MRRC MUL MVN MVNCC MVNCS MVNEQ MVNHI MVNLT CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword MVNNE MVNS MVNSEQ MVNSNE NOP ORR ORRCC ORRCS ORREQ ORRGE ORRGT ORRLE ORRNE ORRS ORRSEQ ORRSNE POP CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword POPCC POPEQ POPGE POPGT POPHI POPLE POPLS POPNE PUSH REV RRX RRXS RSB RSBEQ RSBGE RSBGT RSBLE RSBLT CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword RSBMI RSBNE RSBS RSBSGT RSC RSCS SBC SBCS SDIV SMULL STM STMFD STMIA STMIB STR STRB STRBLS STRBNE CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword STRCC STRD STREQ STRGE STRGT STRH STRHEQ STRHI STRHLT STRHNE STRLS STRLT STRMI STRNE STRPL SUB SUBCS CONTAINEDIN=ALLBUT, ASM_COMMENT 
-syn keyword asm_keyword SUBEQ SUBGT SUBLE SUBNE SUBS SUBSEQ SVC TEQ TEQEQ TEQNE TST UBFX UDIV UDIVEQ UMLAL UMULL UXTAH UXTB CONTAINEDIN=ALLBUT, ASM_COMMENT 
+syn keyword asm_keyword ADC ADCS ADD ADDCC ADDEQ ADDGE ADDGT ADDLE ADDLS ADDLT ADDNE ADDPL ADDS AND ANDCC ANDEQ ANDGT containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword ANDHI ANDLE ANDLS ANDNE ANDS ANDSNE ASR ASRCS ASRS B BCC BCS BEQ BFI BGE BGT BHI BIC BICEQ BICGE containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword BICHI BICLT BICNE BL BLE BLEQ BLS BLT BLX BMI BNE BPL BX BXEQ BXLS BXNE C CBNZ CBZ CLZ CMN CMNMI containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword CMP CMPCS CMPEQ CMPHI CMPNE CMPPL CPSIE DSB EOR EOREQ EORNE ISB IT ITT LDM LDMDB LDMEQ LDMIB LDR containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword LDRB LDRBEQ LDRBNE LDRCC LDRD LDREQ LDRGE LDRGT LDRH LDRHEQ LDRHI LDRHLT LDRHNE LDRLE LDRLS LDRLT containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword LDRNE LDRSH LSL LSLCC LSLCS LSLEQ LSLGT LSLLE LSLLS LSLNE LSLS LSR LSRCC LSREQ LSRHI LSRLS LSRNE containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword LSRS LSRSEQ MCR MCRR MLA MLS MOV MOVCC MOVCS MOVEQ MOVGE MOVGT MOVHI MOVLE MOVLS MOVLT MOVMI MOVNE containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword MOVPL MOVS MOVT MOVTLE MOVTNE MOVW MOVWLE MOVWNE MRC MRRC MUL MVN MVNCC MVNCS MVNEQ MVNHI MVNLT containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword MVNNE MVNS MVNSEQ MVNSNE NOP ORR ORRCC ORRCS ORREQ ORRGE ORRGT ORRLE ORRNE ORRS ORRSEQ ORRSNE POP containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword POPCC POPEQ POPGE POPGT POPHI POPLE POPLS POPNE PUSH REV RRX RRXS RSB RSBEQ RSBGE RSBGT RSBLE RSBLT containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword RSBMI RSBNE RSBS RSBSGT RSC RSCS SBC SBCS SDIV SMULL STM STMFD STMIA STMIB STR STRB STRBLS STRBNE containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword STRCC STRD STREQ STRGE STRGT STRH STRHEQ STRHI STRHLT STRHNE STRLS STRLT STRMI STRNE STRPL SUB SUBCS containedin=ALLBUT,asm_comment 
+syn keyword asm_keyword SUBEQ SUBGT SUBLE SUBNE SUBS SUBSEQ SVC TEQ TEQEQ TEQNE TST UBFX UDIV UDIVEQ UMLAL UMULL UXTAH UXTB containedin=ALLBUT,asm_comment 
 syn keyword asm_keyword UXTBNE UXTH VMOV VMSR WFI BS RET
 
 syn match asm_block      "^\w\+:"
@@ -53,17 +53,18 @@ syn match asm_string     "=\w\+"
 syn match asm_constant   "\<[A-Z_][A-Z0-9_]\{2,}\>"
 syn match asm_num        "\<[xw][0-9]\+\>"
 
-highlight   asm_num         ctermfg=blue
-highlight   asm_comment     ctermfg=107
-highlight   asm_type_data   ctermfg=13
-highlight   asm_addr        ctermfg=250"215
-highlight   asm_in_braket   ctermfg=42
-highlight   asm_function    ctermfg=139
-highlight   Normal          ctermfg=252
-highlight   asm_keyword     ctermfg=130"215
-highlight   asm_constant    ctermfg=139
-highlight   asm_block       ctermfg=darkcyan
-highlight   asm_string      ctermfg=215
+highlight   asm_num         ctermfg=75  guifg=#569cd6
+highlight   asm_comment     ctermfg=107 guifg=#6a9955
+highlight   asm_type_data   ctermfg=13  guifg=#9170cb
+highlight   asm_addr        ctermfg=250 guifg=#bcbcbc
+highlight   asm_in_braket   ctermfg=42  guifg=#00d787
+highlight   asm_function    ctermfg=139 guifg=#af87af
+highlight   Normal          ctermfg=252 guifg=#d0d0d0
+highlight   asm_keyword     ctermfg=130 guifg=#af5f00
+highlight   asm_constant    cterm=none ctermfg=13 gui=none guifg=#9170cb
+highlight! link Constant    asm_constant
+highlight   asm_block       ctermfg=79  guifg=#4ec9b0
+highlight   asm_string      ctermfg=215 guifg=#ffaf5f
 
 " Load snippets from snipet/asm/
 if exists('*snippet_engine#load_filetype')

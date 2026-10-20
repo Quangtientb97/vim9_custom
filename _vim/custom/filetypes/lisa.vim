@@ -89,7 +89,7 @@ highlight default link lisa_bracket       Delimiter
 highlight lisa_comment       ctermfg=107 guifg=#6A9955
 highlight lisa_comment_block ctermfg=107 guifg=#6A9955
 highlight lisa_string        ctermfg=215 guifg=#ffaf5f
-highlight lisa_preproc       ctermfg=13  guifg=#ff55ff
+highlight lisa_preproc       ctermfg=13  guifg=#9170cb
 highlight lisa_number        ctermfg=brown guifg=#d7875f
 highlight lisa_block         ctermfg=176 guifg=#d787d7
 highlight lisa_snps_block    ctermfg=176 guifg=#d787d7
@@ -97,7 +97,7 @@ highlight lisa_keyword       ctermfg=176 guifg=#d787d7
 highlight lisa_condition     ctermfg=176 guifg=#d787d7
 highlight lisa_type          ctermfg=blue guifg=#5fafff
 highlight lisa_function      ctermfg=blue guifg=#5fafff
-highlight lisa_constant      ctermfg=cyan guifg=#5ffdff
+highlight lisa_constant      cterm=none ctermfg=13 gui=none guifg=#9170cb
 highlight lisa_bracket       ctermfg=251 guifg=#d0d0d0
 
 finish

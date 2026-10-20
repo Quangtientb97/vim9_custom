@@ -12,9 +12,9 @@ syn match tcl_shift "<<"
 syn match tcl_shift ">>"
 
 "highlight tcl_statement ctermfg=brown
-highlight tcl_statement ctermfg=3
-highlight tcl_not ctermfg=42
-highlight tcl_shift ctermfg=red
+highlight tcl_statement ctermfg=179 guifg=#d7ba7d
+highlight tcl_not       ctermfg=42  guifg=#00d787
+highlight tcl_shift     ctermfg=red guifg=#e06c75
 
 " Load snippets from snipet/tcl/
 if exists('*snippet_engine#load_filetype')

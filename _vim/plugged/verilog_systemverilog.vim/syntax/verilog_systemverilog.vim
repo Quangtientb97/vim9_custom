@@ -467,7 +467,7 @@ if version >= 508 || !exists("did_verilog_syn_inits")
 	 highlight  verilogMacro         ctermfg=180 guifg=#dfaf87
 	 highlight  verilogNot           ctermfg=42 guifg=#00d787
 	 highlight  verilogErrorKeyword  ctermfg=235 ctermbg=red guifg=#262626 guibg=#ff0000
-     highlight  verilogConstant      cterm=none ctermfg=13 gui=none guifg=#ff87ff
+     highlight  verilogConstant      cterm=none ctermfg=13 gui=none guifg=#7e57c2
 	 highlight  Normal               ctermfg=252 guifg=#d0d0d0
 
 	 delcommand HiLink

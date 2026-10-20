@@ -42,6 +42,7 @@ set ttimeout
 set ttimeoutlen=50
 set maxmempattern=2000000
 set synmaxcol=300
+set redrawtime=1000
 
 " Vim 9+ optimizations (Smooth scrolling, No bell sound/flash, Fast log quickfix filter, Smart diff, Splitkeep)
 if exists('&smoothscroll')
@@ -60,7 +61,7 @@ if has('patch-9.0.0240')
     set diffopt+=linematch:60
 endif
 
-" Terminal Alt keycode mapping (makes Alt/Meta keys work in terminal Vim)
+" Terminal Alt keycode mapping & Escape Leakage Prevention (SSH / tmux / soc13)
 if !has('gui_running')
     silent! execute "set <M-j>=\<Esc>j"
     silent! execute "set <M-k>=\<Esc>k"
@@ -68,12 +69,18 @@ if !has('gui_running')
     silent! execute "set <M-Up>=\<Esc>[1;3A"
     silent! execute "set <M-S-Right>=\<Esc>[1;4C"
     silent! execute "set <M-S-Left>=\<Esc>[1;4D"
+
+    " Disable modifyOtherKeys and terminal queries to prevent escape sequence leakage over SSH/tmux
+    set t_TI=
+    set t_TE=
+    set t_u7=
+    set t_RV=
 endif
 
 " Upward recursive tag searching (searches current dir up to root)
 set tags=./tags;,tags;
-" Allow linear search in unsorted tag files (prevents E432: Tags file not sorted)
-silent! set notagbsearch
+" Fast binary tag search (O(log N))
+set tagbsearch
 
 if &diff
     syntax off
@@ -82,39 +89,6 @@ endif
 " Markdown display settings (all code blocks in unified string color)
 let g:markdown_syntax_conceal = 0
 let g:markdown_fenced_languages = []
-
-colorscheme desert
-syntax enable
-filetype plugin indent on
-
-" Disable bold text globally across all highlight groups while preserving colors
-function! s:DisableBold() abort
-    let l:hl_out = ''
-    redir => l:hl_out
-    silent highlight
-    redir END
-    for l:line in split(l:hl_out, "\n")
-        if l:line =~# '\<bold\>'
-            let l:grp = matchstr(l:line, '^\k\+')
-            if !empty(l:grp)
-                if l:line =~# '\<underline\>'
-                    execute 'silent! highlight ' . l:grp . ' cterm=underline gui=underline term=underline'
-                else
-                    execute 'silent! highlight ' . l:grp . ' cterm=NONE gui=NONE term=NONE'
-                endif
-            endif
-        endif
-    endfor
-endfunction
-call s:DisableBold()
-
-augroup VimrcNoBold
-    autocmd!
-    autocmd ColorScheme * call s:DisableBold()
-augroup END
-
-" Statusline Powerline Arrow (1 = arrow glyph , 0 = clean flat block fallback)
-let g:powerline_arrow = 0
 
 " Determine the directory containing _vimrc and associated runtime directory
 let s:vim_custom_root = expand('<sfile>:p:h')
@@ -126,6 +100,17 @@ set runtimepath-=~/.vim
 set runtimepath-=~/.vim/after
 execute 'set runtimepath^=' . fnameescape(s:vim_runtime)
 execute 'set runtimepath+=' . fnameescape(s:vim_runtime . '/after')
+
+" Enable True Color (24-bit RGB) for terminal compatibility (Tabby, MobaXterm)
+if has('termguicolors')
+    set termguicolors
+endif
+
+syntax enable
+colorscheme codedark
+
+" Statusline Powerline Arrow (1 = arrow glyph , 0 = clean flat block fallback)
+let g:powerline_arrow = 0
 
 "-----------------------------------------------------------------------------
 " 2. Plugin Management (vim-plug)
@@ -151,6 +136,9 @@ let g:rainbow_conf = {
 \}
 
 let g:matchup_surround_enabled = 1
+let g:matchup_matchparen_deferred = (has('timers') && exists('*timer_pause')) ? 1 : 0
+let g:matchup_matchparen_stopline = 100
+let g:matchup_matchparen_offscreen = {}
 " Prevent vim-matchup from ever mapping 'cs%' (which intercepts/delays 'c')
 nmap <Plug>(DisableMatchupCS) <plug>(matchup-cs%)
 
@@ -172,6 +160,9 @@ silent! call plug#begin(s:plugged_dir)
     endif
 call plug#end()
 
+" verilog_systemverilog settings (disable indent for preprocessor directives `ifndef, `ifdef, etc.)
+let g:verilog_disable_indent_lst = 'eos,standalone,preproc'
+
 " context.vim (Sticky Scroll Context Header)
 let g:context_enabled = 1
 let g:context_max_height = 5
@@ -188,29 +179,8 @@ let g:context_filetype_blacklist = [
 "-----------------------------------------------------------------------------
 set cursorline
 
-" CursorLine & Numbers
-highlight CursorLine        cterm=none ctermbg=238 guibg=#444444 gui=none
-highlight CursorLineNr      cterm=none ctermfg=blue ctermbg=none guifg=#5fafff guibg=NONE gui=none
-highlight LineNr            ctermfg=245 ctermbg=none guifg=#8a8a8a guibg=NONE
-highlight Visual            cterm=underline ctermfg=none ctermbg=238 guibg=#444444 gui=underline
-highlight Cursor            ctermfg=white ctermbg=white guifg=#ffffff guibg=#ffffff
-" End of Buffer (~) & NonText: Clean background matching editor (fixes gray bar in Vim 9)
-highlight NonText           ctermfg=240 ctermbg=none guifg=#585858 guibg=NONE
-highlight EndOfBuffer       ctermfg=240 ctermbg=none guifg=#585858 guibg=NONE
-
-" Popup Menu Completion
-highlight Pmenu      ctermfg=DarkGray ctermbg=233 guifg=#808080 guibg=#121212
-highlight PmenuSel   ctermfg=blue     ctermbg=233 guifg=#5fafff guibg=#121212
-highlight Search     ctermfg=black    cterm=underline ctermbg=185 guifg=#000000 guibg=#d7d75f gui=underline
-silent! highlight CurSearch  cterm=none ctermfg=232 ctermbg=214 guifg=#1c1c1c guibg=#ffaf00 gui=none
-highlight PmenuThumb ctermfg=245      ctermbg=245 guifg=#8a8a8a guibg=#8a8a8a
-highlight PmenuSbar  ctermfg=240      ctermbg=240 guifg=#585858 guibg=#585858
-
-" Diff Highlights
-highlight DiffAdd    ctermfg=176  ctermbg=none cterm=underline guifg=#d787d7 guibg=NONE gui=underline
-highlight DiffChange ctermfg=176  ctermbg=none cterm=underline guifg=#d787d7 guibg=NONE gui=underline
-highlight DiffDelete ctermfg=blue ctermbg=none guifg=#5fafff guibg=NONE
-highlight DiffText   ctermfg=215  ctermbg=none guifg=#ffaf5f guibg=NONE
+" Word Highlight under cursor
+highlight WordUnderCursor cterm=underline ctermbg=237 guibg=#3a3a3a gui=underline
 
 " NERDTree Config & Highlights
 let g:NERDTreeStatusline = '%#StatusLineNERDTreeNC# NERDTree %='
@@ -220,12 +190,12 @@ let g:NERDTreeIgnore = ['\.o$', '\.a$', '\.so$', '\.d$', '\.vpd$', '\.fsdb$', '\
 
 highlight NERDTreeOpenable        ctermfg=250  guifg=#bcbcbc
 highlight NERDTreeClosable        ctermfg=250  guifg=#bcbcbc
-highlight NERDTreeDir             ctermfg=blue guifg=#5fafff
+highlight NERDTreeDir             ctermfg=75   guifg=#569cd6
 highlight NERDTreeDirSlash        ctermfg=248  guifg=#a8a8a8
 highlight NERDTreeHelpKey         ctermfg=248  guifg=#a8a8a8
 highlight NERDTreeFile            ctermfg=248  guifg=#a8a8a8
 highlight NERDTreeLinkTarget      ctermfg=blue guifg=#5fafff cterm=underline gui=underline
-highlight NERDTreeLinkDir         ctermfg=13   guifg=#ff55ff
+highlight NERDTreeLinkDir         ctermfg=13   guifg=#9170cb
 highlight NERDTreeLinkFile        ctermfg=139  guifg=#af87af
 highlight NERDTreeExecFile        ctermfg=248  guifg=#a8a8a8
 highlight NERDTreeCWD             ctermfg=176  guifg=#d787d7
@@ -235,24 +205,6 @@ highlight NERDTreeBookmark        ctermfg=gray guifg=#808080
 highlight NERDTreeBookmarksLeader ctermfg=233  guifg=#121212
 highlight NERDTreeBookmarksHeader ctermfg=gray guifg=#808080
 highlight NERDTreeBookmarkName    ctermfg=215  guifg=#ffaf5f
-
-" Bracket & Error Highlights
-highlight Folded          ctermbg=242 ctermfg=234 guibg=#6c6c6c guifg=#1c1c1c
-highlight MatchParen      cterm=none  ctermbg=brown ctermfg=white guibg=#8b4513 guifg=#ffffff gui=none
-highlight ErrorMsg        ctermfg=001 ctermbg=white cterm=reverse guifg=#ffffff guibg=#d70000
-highlight WordUnderCursor cterm=underline ctermbg=237 guibg=#3a3a3a gui=underline
-
-" Default Syntax Highlights
-highlight Comment    ctermfg=107      guifg=#6A9955
-highlight Normal     ctermfg=252      guifg=#d0d0d0
-highlight Special    ctermfg=13       guifg=#ff55ff
-highlight SpecialKey ctermfg=darkblue guifg=#005faf
-highlight Type       ctermfg=blue     guifg=#5fafff
-highlight Identifier ctermfg=blue     guifg=#5fafff
-highlight Directory  ctermfg=blue     guifg=#5fafff
-highlight netrwExe   ctermfg=gray     guifg=#808080
-highlight String     ctermfg=215      guifg=#ffaf5f
-highlight PreProc    ctermfg=13       guifg=#ff55ff
 
 " Floating Popup Windows (Vim 8.2+) - VS Code dark slate background
 highlight CustomPopup       ctermfg=254 ctermbg=238 guifg=#e4e4e4 guibg=#2b313c
@@ -335,26 +287,12 @@ inoremap <silent> <M-k> <esc>:m .-2<cr>==gi
 vnoremap <silent> <M-j> :m '>+1<cr>gv=gv
 vnoremap <silent> <M-k> :m '<-2<cr>gv=gv
 
-nnoremap <silent> <A-j> :m .+1<cr>==
-nnoremap <silent> <A-k> :m .-2<cr>==
-inoremap <silent> <A-j> <esc>:m .+1<cr>==gi
-inoremap <silent> <A-k> <esc>:m .-2<cr>==gi
-vnoremap <silent> <A-j> :m '>+1<cr>gv=gv
-vnoremap <silent> <A-k> :m '<-2<cr>gv=gv
-
 nnoremap <silent> <M-Down> :m .+1<cr>==
 nnoremap <silent> <M-Up>   :m .-2<cr>==
 inoremap <silent> <M-Down> <esc>:m .+1<cr>==gi
 inoremap <silent> <M-Up>   <esc>:m .-2<cr>==gi
 vnoremap <silent> <M-Down> :m '>+1<cr>gv=gv
 vnoremap <silent> <M-Up>   :m '<-2<cr>gv=gv
-
-nnoremap <silent> <A-Down> :m .+1<cr>==
-nnoremap <silent> <A-Up>   :m .-2<cr>==
-inoremap <silent> <A-Down> <esc>:m .+1<cr>==gi
-inoremap <silent> <A-Up>   <esc>:m .-2<cr>==gi
-vnoremap <silent> <A-Down> :m '>+1<cr>gv=gv
-vnoremap <silent> <A-Up>   :m '<-2<cr>gv=gv
 
 " Quick Search & Replace
 nnoremap <C-h> :%s///g<left><left><left>
@@ -499,10 +437,10 @@ augroup VimrcCore
     autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
     " Startup Layout: Empty vi -> NERDTree on left, Startify on right; File vi -> NERDTree on left, File on right
-    autocmd VimEnter * nested if !argc() | Startify | NERDTree | else | NERDTree | wincmd p | endif
-    autocmd VimEnter * silent! nunmap cs%
+    if !get(g:, 'testing_mode', 0)
+        autocmd VimEnter * nested if !argc() | Startify | NERDTree | else | NERDTree | wincmd p | endif
+    endif
     autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-    autocmd BufNewFile,BufReadPre * setlocal noswapfile
 
     " CursorLine & timeout management in Insert mode
     autocmd InsertEnter * set nocul | set timeoutlen=0
@@ -523,7 +461,6 @@ augroup END
 
 augroup VimrcFiletypes
     autocmd!
-    autocmd BufRead,BufNewFile *            setlocal modifiable
     autocmd BufRead,BufNewFile *.jj2        setfiletype jinja2
     autocmd BufRead,BufNewFile *.log        setlocal nomodifiable | setfiletype logfile
     autocmd BufRead,BufNewFile Makefile*,*.make,*.mconf setfiletype make
@@ -566,7 +503,7 @@ augroup VimrcFileTypeSettings
                 \ nnoremap <buffer> J 10j
                 \ | nnoremap <buffer> K 10k
                 \ | highlight! NERDTreeCWD ctermfg=176 guifg=#d787d7
-                \ | highlight! NERDTreeDir ctermfg=blue guifg=#5fafff
+                \ | highlight! NERDTreeDir ctermfg=75 guifg=#569cd6
 
     autocmd FileType netrw
                 \ nnoremap <buffer> J 10j
@@ -602,24 +539,7 @@ augroup END
 "-----------------------------------------------------------------------------
 " 7. User Commands & Plugin Configurations
 "-----------------------------------------------------------------------------
-command! Compile if filereadable(expand('~/tiandir/python/precomp.py')) |
-            \   execute '!clear; python3 ~/tiandir/python/precomp.py ' . expand('%') |
-            \ else |
-            \   echohl WarningMsg | echo "precomp.py not found at ~/tiandir/python/precomp.py" | echohl None |
-            \ endif
-execute 'command! GoVim   vsplit ' . fnameescape(s:plugged_dir) . ' | wincmd H | wincmd L | NERDTreeClose'
-execute 'command! GoCustom vsplit ' . fnameescape(s:custom_dir) . ' | wincmd H | wincmd L | NERDTreeClose'
 command! E       e %:h
-command! GoPy    if filereadable(expand('~/tiandir/python/tian/auto_complete.py')) |
-            \   vsplit ~/tiandir/python/tian/auto_complete.py |
-            \   wincmd H |
-            \   wincmd L |
-            \   NERDTreeClose |
-            \   vertical resize 80 |
-            \   wincmd h |
-            \ else |
-            \   echohl WarningMsg | echo "auto_complete.py not found at ~/tiandir/python/tian/auto_complete.py" | echohl None |
-            \ endif
 command! Term    call ToggleBottomTerminal()
 command! Ascii   call ShowAscii(0)
 command! Rainbow call rainbow_main#toggle()

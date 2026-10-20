@@ -17,7 +17,7 @@ syn match upf_braket "[{}\\]"
 
 syn keyword upf_sub_statement primary ground
 
-highlight upf_statement     ctermfg=176
-highlight upf_option        ctermfg=blue
-highlight upf_braket        ctermfg=215
-highlight upf_sub_statement ctermfg=215
+highlight upf_statement     ctermfg=176 guifg=#d787d7
+highlight upf_option        ctermfg=75  guifg=#569cd6
+highlight upf_braket        ctermfg=215 guifg=#ffaf5f
+highlight upf_sub_statement ctermfg=215 guifg=#ffaf5f

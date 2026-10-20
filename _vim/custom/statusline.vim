@@ -23,7 +23,8 @@ function! StatusLineSearchCount() abort
         return ''
     endif
     try
-        let l:res = searchcount({'recompute': 1, 'maxcount': 999, 'timeout': 100})
+        let l:recompute = line('$') > 3000 ? 0 : 1
+        let l:res = searchcount({'recompute': l:recompute, 'maxcount': 999, 'timeout': 25})
         if empty(l:res) || l:res.total == 0
             return ''
         endif
@@ -148,27 +149,26 @@ augroup StatusLineFocus
 augroup END
 
 " 6. Statusline Palette (Powerline Khaki & Slate Theme)
-highlight StatusLineFileActive  cterm=none ctermfg=234 ctermbg=137 guifg=#232323 guibg=#9e8d78 gui=none
-highlight StatusLineFileSep     cterm=none ctermfg=137 ctermbg=236 guifg=#9e8d78 guibg=#282c34 gui=none
+highlight StatusLineFileActive  cterm=none ctermfg=234 ctermbg=137 guifg=#232323 guibg=#af875f gui=none
+highlight StatusLineFileSep     cterm=none ctermfg=137 ctermbg=234 guifg=#af875f guibg=#1e1e1e gui=none
 
 highlight StatusLineNCFile      cterm=none ctermfg=244 ctermbg=237 guifg=#808080 guibg=#333842 gui=none
-highlight StatusLineNCFileSep   cterm=none ctermfg=237 ctermbg=235 guifg=#333842 guibg=#21252b gui=none
+highlight StatusLineNCFileSep   cterm=none ctermfg=237 ctermbg=234 guifg=#333842 guibg=#1e1e1e gui=none
 
-highlight StatusLineScope       cterm=none ctermfg=250 ctermbg=236 guifg=#abb2bf guibg=#282c34 gui=none
-highlight StatusLineBase        cterm=none ctermfg=244 ctermbg=236 guifg=#5c6370 guibg=#282c34 gui=none
+highlight StatusLineBase        cterm=none ctermfg=244 ctermbg=234 guifg=#5c6370 guibg=#1e1e1e gui=none
 highlight StatusLineWarn        cterm=none ctermfg=white ctermbg=167 guifg=#ffffff guibg=#e06c75 gui=none
-highlight StatusLineSearch      cterm=none ctermfg=186 ctermbg=236 guifg=#e5c07b guibg=#282c34 gui=none
+highlight StatusLineSearch      cterm=none ctermfg=186 ctermbg=234 guifg=#e5c07b guibg=#1e1e1e gui=none
 highlight StatusLineVisual      cterm=none ctermfg=234 ctermbg=75  guifg=#232323 guibg=#61afef gui=none
-highlight StatusLineInfo        cterm=none ctermfg=248 ctermbg=236 guifg=#abb2bf guibg=#282c34 gui=none
-highlight StatusLinePos         cterm=none ctermfg=250 ctermbg=236 guifg=#d0d0d0 guibg=#282c34 gui=none
+highlight StatusLineInfo        cterm=none ctermfg=248 ctermbg=234 guifg=#abb2bf guibg=#1e1e1e gui=none
+highlight StatusLinePos         cterm=none ctermfg=250 ctermbg=234 guifg=#d0d0d0 guibg=#1e1e1e gui=none
 
-highlight StatusLineNERDTree    cterm=none ctermfg=234 ctermbg=137 guifg=#232323 guibg=#9e8d78 gui=none
-highlight StatusLineNERDTreeSep cterm=none ctermfg=137 ctermbg=236 guifg=#9e8d78 guibg=#282c34 gui=none
+highlight StatusLineNERDTree    cterm=none ctermfg=234 ctermbg=137 guifg=#232323 guibg=#af875f gui=none
+highlight StatusLineNERDTreeSep cterm=none ctermfg=137 ctermbg=234 guifg=#af875f guibg=#1e1e1e gui=none
 highlight StatusLineNERDTreeNC  cterm=none ctermfg=244 ctermbg=237 guifg=#808080 guibg=#333842 gui=none
-highlight StatusLineNERDTreeNCSep cterm=none ctermfg=237 ctermbg=235 guifg=#333842 guibg=#21252b gui=none
+highlight StatusLineNERDTreeNCSep cterm=none ctermfg=237 ctermbg=234 guifg=#333842 guibg=#1e1e1e gui=none
 
-highlight StatusLine           cterm=none ctermfg=250 ctermbg=236 guifg=#abb2bf guibg=#282c34 gui=none
-highlight StatusLineNC         cterm=none ctermfg=243 ctermbg=235 guifg=#5c6370 guibg=#21252b gui=none
+highlight StatusLine           cterm=none ctermfg=250 ctermbg=234 guifg=#abb2bf guibg=#1e1e1e gui=none
+highlight StatusLineNC         cterm=none ctermfg=243 ctermbg=234 guifg=#5c6370 guibg=#1e1e1e gui=none
 highlight VertSplit            ctermbg=none ctermfg=238 guibg=NONE guifg=#444444
 highlight StatusLineTerm       ctermfg=253 ctermbg=28  guifg=#dadada guibg=#2a6634 gui=none
 highlight StatusLineTermNC     ctermfg=248 ctermbg=236 guifg=#a8a8a8 guibg=#303030

@@ -12,7 +12,7 @@ endif
 " UVM_VEBOSITY UVM_CONFIG_DB_TRACE
 syn keyword csh_statement force run force value 
 
-highlight csh_statement ctermfg=yellow
+highlight csh_statement ctermfg=186 guifg=#e5c07b
 
 " Load snippets from snipet/csh/
 if exists('*snippet_engine#load_filetype')

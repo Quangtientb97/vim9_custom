@@ -12,7 +12,6 @@ syn match C_braket 	        "[=*,;]"
 syn match C_variable            "\<[a-zA-Z_][a-zA-Z0-9_$]*\>"
 syn region C_String             start=+"+ skip=+\\"+ end=+"+ contains=C_format,C_escape
 syn match C_constant 	        "\<[A-Z_][A-Z0-9_]\{2,}\>"
-syn match C_funtion 		"\%(\*\?\s*\)\@<=\<\w\+\>\ze\s*("
 syn match C_function 		"\%(\*\?\s*\)\@<=\<\w\+\>\ze\s*("
 syn match C_addr 		"[&|]"
 syn match C_not 		"!\w\+"
@@ -38,21 +37,22 @@ syn match C_type 		"\<\w\+_e\>"
 syn match Ccomment 		"//.*"
 
 " Highlight palette matching SystemVerilog & VS Code Dark+
-highlight C_constant    cterm=none ctermfg=13 gui=none guifg=#ff87ff
+highlight C_constant    cterm=none ctermfg=13 gui=none guifg=#9170cb
+highlight! link Constant C_constant
+highlight! link cConstant C_constant
 highlight C_type        ctermfg=75 guifg=#569cd6
 highlight Type          ctermfg=75 guifg=#569cd6
 highlight C_void        ctermfg=75 guifg=#569cd6
-highlight C_funtion     ctermfg=186 guifg=#ebe198
 highlight C_function    ctermfg=186 guifg=#ebe198
-highlight! link Function C_funtion
-highlight! link cCustomFunc C_funtion
+highlight! link C_funtion C_function
+highlight! link Function C_function
+highlight! link cCustomFunc C_function
 highlight C_variable    ctermfg=117 guifg=#9cdcfe
 highlight C_property    ctermfg=117 guifg=#9cdcfe
 highlight C_struct      ctermfg=117 guifg=#9cdcfe
 highlight C_number      ctermfg=151 guifg=#b5cea8
 highlight! link cNumber C_number
 highlight! link Number  C_number
-highlight C_string      term=none ctermfg=173 guifg=#ce9178
 highlight C_String      term=none ctermfg=173 guifg=#ce9178
 highlight! link cString    C_String
 highlight! link cCharacter C_String

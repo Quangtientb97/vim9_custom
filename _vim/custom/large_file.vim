@@ -4,7 +4,8 @@
 "=============================================================================
 
 function! s:OptimizeLargeFile() abort
-    if line('$') > 1500
+    let l:lines = line('$')
+    if l:lines > 1500
         let b:large_file_optimized = 1
         " Disable swapfile to eliminate disk I/O on large buffers
         setlocal noswapfile
@@ -22,6 +23,11 @@ function! s:OptimizeLargeFile() abort
         " Switch slow folding methods to manual to keep scrolling smooth
         if &l:foldmethod ==# 'syntax' || &l:foldmethod ==# 'indent' || &l:foldmethod ==# 'expr'
             setlocal foldmethod=manual
+        endif
+
+        " For very large files (> 5000 lines), disable cursorline to maximize terminal scroll FPS
+        if l:lines > 5000
+            setlocal nocursorline
         endif
     endif
 endfunction

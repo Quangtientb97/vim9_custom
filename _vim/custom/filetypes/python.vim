@@ -31,43 +31,22 @@ syn match     python_csh_var     "\$\w\+"                       containedin=pyth
 syn keyword   python_obj         self
 syn keyword   python_csh_cmd     echo rm mkdir cp xrun cd mv    containedin=pythonString
 
-highlight python_function  ctermfg=blue
-highlight python_braket    ctermfg=252
-highlight python_constant  ctermfg=13
-highlight python_statement ctermfg=176
-highlight Normal           ctermfg=253
-highlight python_not       ctermfg=70
-highlight python_fmtspec   ctermfg=13
-highlight python_bw        ctermfg=252
-highlight python_obj       ctermfg=3
-highlight python_csh_cmd   ctermfg=13
-highlight python_csh_var   ctermfg=blue
+highlight python_function  ctermfg=186 guifg=#ebe198
+highlight python_braket    ctermfg=252 guifg=#d4d4d4
+highlight python_constant  ctermfg=13  guifg=#9170cb
+highlight! link Constant   python_constant
+highlight python_statement ctermfg=176 guifg=#d787d7
+highlight Normal           ctermfg=252 guifg=#d0d0d0
+highlight python_not       ctermfg=70  guifg=#5faf00
+highlight python_fmtspec   ctermfg=13  guifg=#9170cb
+highlight python_bw        ctermfg=252 guifg=#d4d4d4
+highlight python_obj       ctermfg=179 guifg=#d7ba7d
+highlight python_csh_cmd   ctermfg=13  guifg=#9170cb
+highlight python_csh_var   ctermfg=75  guifg=#569cd6
 
-"-----------------------------------------------------------------------------
 " 3. IndentLine Guide (show_tab)
-"-----------------------------------------------------------------------------
-" Script Name: indentLine.vim
-" Version:     1.0.2
-" Last Change: Dec 22, 2012
-" Author:      Yggdroot <archofortune@gmail.com>
-"
-" Description: To show the indent line
-
-"if !has("conceal") || exists("g:loaded_indentLine")
-"    finish
-"endif
-"let g:loaded_indentLine = 1
-
-if !exists("g:indentLine_char")
-    " | ¦ ┆ │
-"    let g:indentLine_char = "┆"
-"    let g:indentLine_char = "¦"
-    let g:indentLine_char = "│"
-endif
-
-if !exists("g:indentLine_indentLevel")
-    let g:indentLine_indentLevel = 20
-endif
+let g:indentLine_char = get(g:, 'indentLine_char', '│')
+let g:indentLine_indentLevel = get(g:, 'indentLine_indentLevel', 20)
 
 setlocal conceallevel=1
 setlocal concealcursor=ic
@@ -104,11 +83,3 @@ endif
 
 
 command! -nargs=? ResetIndentLines call <SID>ResetWidth(<f-args>)
-
-" vim:et:ts=4:sw=4:fdm=marker:fmr={{{,}}}
-
-finish
-"=============================================================================
-" Dictionary Keywords (used for autocomplete)
-"=============================================================================
-listdir getcwd chdir

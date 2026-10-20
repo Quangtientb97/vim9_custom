@@ -1,0 +1,182 @@
+version: 7
+terminal:
+  colorScheme:
+    name: Tian dark mode
+    foreground: '#f8f8f2'
+    background: '#272822'
+    cursor: '#ff7043'
+    colors:
+      - '#000000'
+      - '#ff5555'
+      - '#50fa7b'
+      - '#f1fa8c'
+      - '#64b5f6'
+      - '#7e57c2'
+      - '#8be9fd'
+      - '#bbbbbb'
+      - '#555555'
+      - '#ff5555'
+      - '#50fa7b'
+      - '#f1fa8c'
+      - '#85befd'
+      - '#7e57c2'
+      - '#8be9fd'
+      - '#ffffff'
+    selection: '#ffffff'
+    selectionForeground: '#ff7043'
+  lightColorScheme:
+    name: Dracula
+    foreground: '#f8f8f2'
+    background: '#272822'
+    cursor: '#ff7043'
+    colors:
+      - '#000000'
+      - '#ff5555'
+      - '#50fa7b'
+      - '#f1fa8c'
+      - '#64b5f6'
+      - '#7e57c2'
+      - '#8be9fd'
+      - '#bbbbbb'
+      - '#555555'
+      - '#ff5555'
+      - '#50fa7b'
+      - '#f1fa8c'
+      - '#85befd'
+      - '#7e57c2'
+      - '#8be9fd'
+      - '#ffffff'
+    selection: '#ffffff'
+    selectionForeground: '#ff7043'
+  customColorSchemes:
+    - name: Atom
+      foreground: '#D9DCDA'
+      background: '#1e1e1e'
+      cursor: '#d0d0d0'
+      colors:
+        - '#000000'
+        - '#fd5ff1'
+        - '#87c38a'
+        - '#ffd7b1'
+        - '#85befd'
+        - '#b9b6fc'
+        - '#85befd'
+        - '#e0e0e0'
+        - '#000000'
+        - '#fd5ff1'
+        - '#94fa36'
+        - '#f5ffa8'
+        - '#96cbfe'
+        - '#b9b6fc'
+        - '#85befd'
+        - '#e0e0e0'
+    - name: Dracula
+      foreground: '#f8f8f2'
+      background: '#272822'
+      cursor: '#ff7043'
+      colors:
+        - '#000000'
+        - '#ff5555'
+        - '#50fa7b'
+        - '#f1fa8c'
+        - '#64b5f6'
+        - '#7e57c2'
+        - '#8be9fd'
+        - '#bbbbbb'
+        - '#555555'
+        - '#ff5555'
+        - '#50fa7b'
+        - '#f1fa8c'
+        - '#85befd'
+        - '#7e57c2'
+        - '#8be9fd'
+        - '#ffffff'
+    - name: VS Code Dark+
+      foreground: '#cccccc'
+      background: '#1e1e1e'
+      cursor: '#ffffff'
+      colors:
+        - '#000000'
+        - '#cd3131'
+        - '#0dbc79'
+        - '#e5e510'
+        - '#2472c8'
+        - '#bc3fbc'
+        - '#11a8cd'
+        - '#e5e5e5'
+        - '#666666'
+        - '#f14c4c'
+        - '#23d18b'
+        - '#f5f543'
+        - '#3b8eea'
+        - '#d670d6'
+        - '#29b8db'
+        - '#e5e5e5'
+    - name: Tian dark mode
+      foreground: '#f8f8f2'
+      background: '#272822'
+      cursor: '#ff7043'
+      colors:
+        - '#000000'
+        - '#ff5555'
+        - '#50fa7b'
+        - '#f1fa8c'
+        - '#64b5f6'
+        - '#7e57c2'
+        - '#8be9fd'
+        - '#bbbbbb'
+        - '#555555'
+        - '#ff5555'
+        - '#50fa7b'
+        - '#f1fa8c'
+        - '#85befd'
+        - '#7e57c2'
+        - '#8be9fd'
+        - '#ffffff'
+      selection: '#ffffff'
+      selectionForeground: '#ff7043'
+highlightPlugin:
+  highlightProfiles:
+    - id: 60606be0-c0ff-42bc-bf77-de8a2435447f
+      name: Default
+      keywords:
+        - text: UVM_FATAL
+          enabled: true
+          background: false
+          backgroundColor: '0'
+          foregroundColor: '13'
+          foreground: true
+          isCaseSensitive: true
+        - text: UVM_WARNING
+          enabled: true
+          background: false
+          backgroundColor: '0'
+          foregroundColor: '3'
+          foreground: true
+          isCaseSensitive: true
+        - text: UVM_ERROR
+          enabled: true
+          background: false
+          backgroundColor: '0'
+          foregroundColor: '1'
+          foreground: true
+          isCaseSensitive: true
+        - text: UVM_INFO
+          enabled: true
+          background: false
+          backgroundColor: '0'
+          foregroundColor: '4'
+          foreground: true
+          isCaseSensitive: true
+  replaceProfiles:
+    - id: 986666dd-dac9-4c7a-a295-9b4aff66abdd
+      name: Default
+      patterns:
+        - enabled: true
+          search: ERROR
+          replace: 出错啦
+        - enabled: true
+          search: WARN
+          replace: 警告警告
+  highlightEnabled: true
+  advanced: {}

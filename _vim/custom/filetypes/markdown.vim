@@ -27,15 +27,15 @@ syn region mdMath start="\$" end="\$" skip="\\\$" oneline
 syn region mdMathBlock start="\$\$" end="\$\$"
 
 " 5. Highlights matching custom vim aesthetic
-highlight! markdownH1          ctermfg=13  guifg=#ff55ff cterm=none gui=none
-highlight! markdownH2          ctermfg=13  guifg=#ff55ff cterm=none gui=none
+highlight! markdownH1          ctermfg=13  guifg=#9170cb cterm=none gui=none
+highlight! markdownH2          ctermfg=13  guifg=#9170cb cterm=none gui=none
 highlight! markdownH3          ctermfg=176 guifg=#d787d7 cterm=none gui=none
 highlight! markdownH4          ctermfg=176 guifg=#d787d7 cterm=none gui=none
 highlight! markdownH5          ctermfg=215 guifg=#ffaf5f cterm=none gui=none
 highlight! markdownH6          ctermfg=215 guifg=#ffaf5f cterm=none gui=none
 highlight! markdownHeadingDelimiter ctermfg=139 guifg=#af87af cterm=none gui=none
-highlight! markdownH1Delimiter ctermfg=13  guifg=#ff55ff cterm=none gui=none
-highlight! markdownH2Delimiter ctermfg=13  guifg=#ff55ff cterm=none gui=none
+highlight! markdownH1Delimiter ctermfg=13  guifg=#9170cb cterm=none gui=none
+highlight! markdownH2Delimiter ctermfg=13  guifg=#9170cb cterm=none gui=none
 highlight! markdownH3Delimiter ctermfg=176 guifg=#d787d7 cterm=none gui=none
 highlight! markdownH4Delimiter ctermfg=176 guifg=#d787d7 cterm=none gui=none
 highlight! markdownH5Delimiter ctermfg=215 guifg=#ffaf5f cterm=none gui=none
