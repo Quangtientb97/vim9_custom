@@ -15,6 +15,9 @@ function! RunConfigSanityTests()
     call AssertEq(&tabstop, 4, 'tabstop is set to 4')
     call AssertEq(&expandtab, 1, 'expandtab is enabled')
     call AssertMatch('indent', &backspace, 'backspace allows indent backspacing')
+    call AssertFalse(&isfname =~# '32', 'isfname does not contain ASCII 32 (space)')
+    call AssertFalse(&isfname =~# ' ', 'isfname does not contain literal space')
+    call AssertFalse(&isfname =~# ',,,', 'isfname does not contain comma')
 
     " 2. Performance & Search Optimizations
     call AssertEq(&tagbsearch, 1, 'tagbsearch is enabled for O(log N) binary tag search')
