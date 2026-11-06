@@ -40,15 +40,15 @@ endif
 
 setenv VIMINIT "source $VIM_CUSTOM_DIR/_vimrc"
 
-# Aliases for automatic application (vim, vi, vic)
+# Aliases for automatic application (vim, vi, vic) with -X (no X11 connection) for instant startup
 if ( -x "/mnt/users/tientq/.local/vim91/bin/vim" ) then
-    alias vim "/mnt/users/tientq/.local/vim91/bin/vim -u $VIM_CUSTOM_DIR/_vimrc"
-    alias vi  "/mnt/users/tientq/.local/vim91/bin/vim -u $VIM_CUSTOM_DIR/_vimrc"
+    alias vim "/mnt/users/tientq/.local/vim91/bin/vim -X -u $VIM_CUSTOM_DIR/_vimrc"
+    alias vi  "/mnt/users/tientq/.local/vim91/bin/vim -X -u $VIM_CUSTOM_DIR/_vimrc"
 else
-    alias vim "vim -u $VIM_CUSTOM_DIR/_vimrc"
-    alias vi  "vim -u $VIM_CUSTOM_DIR/_vimrc"
+    alias vim "vim -X -u $VIM_CUSTOM_DIR/_vimrc"
+    alias vi  "vim -X -u $VIM_CUSTOM_DIR/_vimrc"
 endif
-alias vic "vim -u $VIM_CUSTOM_DIR/_vimrc"
+alias vic "vim -X -u $VIM_CUSTOM_DIR/_vimrc"
 
 echo "[VIM_ENV] Custom Vim environment loaded from: $VIM_CUSTOM_DIR"
 echo "[VIM_ENV] VIMINIT set to: $VIMINIT"

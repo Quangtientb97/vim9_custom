@@ -10,6 +10,9 @@ vim_custom/config_ide/
 │   └── MobaXterm.ini       # Color palette, font, cursor, and dark theme settings
 ├── tabby/
 │   └── config.yaml         # Color schemes (Tian dark mode, Dracula, Atom, VS Code Dark+) & UVM log highlighters
+├── tmux/
+│   ├── .tmux.conf          # Subdued dark status bar, Vim-like splits, dynamic prefix hints
+│   └── tm.py               # Interactive session manager CLI with cheatsheet
 └── README.md
 ```
 
@@ -24,3 +27,6 @@ vim_custom/config_ide/
   - `colorScheme`: `Tian dark mode` (custom dark palette).
   - `customColorSchemes`: `Tian dark mode`, `Dracula`, `Atom`, `VS Code Dark+`.
   - `highlightPlugin`: Syntax keywords for EDA simulation logs (`UVM_FATAL`, `UVM_ERROR`, `UVM_WARNING`, `UVM_INFO`).
+- **Tmux** (`tmux/.tmux.conf` & `tmux/tm.py`):
+  - `.tmux.conf`: Subdued dark status line, Vim-like splits (`<Ctrl-b> v`, `<Ctrl-b> s`), tab management (`<Ctrl-b> c` new tab & rename, `<Ctrl-b> x`), dynamic key hints.
+  - `tm.py`: Interactive CLI session manager with one-touch navigation and built-in cheatsheet (`-h`).

@@ -77,10 +77,10 @@ let g:which_key_map_root = {
     \ 't': {
     \     'name': '+tab/align',
     \     'n': [':tabnew | :E', 'new-tab-explorer'],
-    \     'a': [':EasyAlign //<left>', 'easy-align-custom'],
+    \     'a': [':Tabularize /', 'tabularize-align'],
     \     'p': [':AP', 'align-ports/signals (:AP)'],
     \ },
-    \ '_':     [':call EasyAlignUnderCursor()',        'align-under-cursor (_)'],
+    \ '_':     ['vy:Tabularize /<C-R>=escape(@",''/\'')<cr><cr>', 'tabularize-selected'],
     \ 'd':     { 'name': '+delete', 's': 'delete-matching-pair (ds on bracket/quote)' },
     \ 'g':     { 'name': '+git/splitjoin', 'd': [':call ToggleGitDiff()', 'git-diff-toggle (gd)'], 'p': [':call ShowSourcePopup()', 'source-popup-def (gp)'], 's': 'split-multiline (gs)', 'j': 'join-singleline (gj)' },
     \ 'S':     [':Startify',                           'startify-dashboard'],

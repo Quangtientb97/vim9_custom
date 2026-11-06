@@ -62,8 +62,8 @@ highlight! link diffRemoved DiffDelete
 " 3. Standard Syntax Highlights
 highlight Comment         guifg=#6A9955 ctermfg=107 gui=NONE cterm=NONE
 highlight Constant        guifg=#9170CB ctermfg=13  gui=NONE cterm=NONE
-highlight String          guifg=#ffaf5f ctermfg=215 gui=NONE cterm=NONE
-highlight Character       guifg=#ffaf5f ctermfg=215 gui=NONE cterm=NONE
+highlight String          guifg=#d29a83 ctermfg=174 gui=NONE cterm=NONE
+highlight Character       guifg=#d29a83 ctermfg=174 gui=NONE cterm=NONE
 highlight Number          guifg=#B5CEA8 ctermfg=151 gui=NONE cterm=NONE
 highlight Boolean         guifg=#569CD6 ctermfg=75  gui=NONE cterm=NONE
 highlight! link Float Number

@@ -769,7 +769,7 @@ function! ShowShortcutHints() abort
         \ '  sc        : Quick Calculator (Math expression)',
         \ '  sa        : Show ASCII info under cursor',
         \ '  sh        : Show Which-Key Menu (Interactive Cheatsheet)',
-        \ '  _ / ta    : EasyAlign alignment (press _ on delimiter, or ta)',
+        \ '  _ / ta    : Tabularize alignment (e.g. _= or ta,)',
         \ '  :AP       : Smart align SV/Verilog ports & signals (:AP)',
         \ '',
         \ '── [ Files & Navigation ] ───────────────────────────',

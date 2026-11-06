@@ -39,7 +39,7 @@ run_suite() {
     echo ""
     echo -e "${CYAN}${BOLD}>>> Running Suite: ${suite_name}...${NC}"
     
-    if "${VIM_BIN}" --cmd "let g:testing_mode = 1" -u "${VIMRC}" -S "${suite_file}"; then
+    if env -u DISPLAY "${VIM_BIN}" -X --not-a-term --cmd "let g:testing_mode = 1" -u "${VIMRC}" -S "${suite_file}"; then
         echo -e "${GREEN}${BOLD}✔ [PASSED] ${suite_name}${NC}"
         return 0
     else
@@ -108,6 +108,14 @@ fi
 
 if [ "${TARGET}" = "all" ] || [ "${TARGET}" = "status" ]; then
     if run_suite "Statusline & Large File Optimization" "${SCRIPT_DIR}/test_statusline_largefile.vim"; then
+        PASSED=$((PASSED + 1))
+    else
+        FAILED=$((FAILED + 1))
+    fi
+fi
+
+if [ "${TARGET}" = "all" ] || [ "${TARGET}" = "python" ]; then
+    if run_suite "Python Syntax Highlighting (python.png)" "${SCRIPT_DIR}/test_syntax_python.vim"; then
         PASSED=$((PASSED + 1))
     else
         FAILED=$((FAILED + 1))

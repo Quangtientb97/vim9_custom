@@ -16,6 +16,10 @@ set noswapfile
 set nobackup
 set nowritebackup
 set nowrap
+set hidden
+set isfname-=,
+set isfname-=32
+set isfname-=\ 
 set noshowcmd
 set number
 set numberwidth=6
@@ -102,8 +106,13 @@ execute 'set runtimepath^=' . fnameescape(s:vim_runtime)
 execute 'set runtimepath+=' . fnameescape(s:vim_runtime . '/after')
 
 " Enable True Color (24-bit RGB) for terminal compatibility (Tabby, MobaXterm)
+" Fallback to 256-color (cterm) under 'screen' / legacy Tmux 1.8 without 24-bit RGB support
 if has('termguicolors')
-    set termguicolors
+    if $TERM =~# '^screen' || exists('$TMUX_NO_TRUECOLOR')
+        set notermguicolors
+    else
+        set termguicolors
+    endif
 endif
 
 syntax enable
@@ -123,8 +132,8 @@ endif
 " Rainbow Brackets Configuration (Bracket Pair Colorization)
 let g:rainbow_active = 0
 let g:rainbow_conf = {
-\   'guifgs': ['#179fff', '#ffd710', '#da70d6', '#179fff', '#ffd710', '#da70d6'],
-\   'ctermfgs': [39, 220, 176, 39, 220, 176],
+\   'guifgs': ['#ffd710', '#da70d6', '#179fff', '#ffd710', '#da70d6', '#179fff'],
+\   'ctermfgs': [220, 176, 39, 220, 176, 39],
 \   'operators': '',
 \   'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/'],
 \   'separately': {
@@ -146,7 +155,7 @@ let s:plugged_dir = s:vim_runtime . '/plugged'
 silent! call plug#begin(s:plugged_dir)
     execute 'Plug ' . string(s:plugged_dir . '/verilog_systemverilog.vim')
     execute 'Plug ' . string(s:plugged_dir . '/nerdtree')
-    execute 'Plug ' . string(s:plugged_dir . '/vim-easy-align')
+    execute 'Plug ' . string(s:plugged_dir . '/tabular')
     execute 'Plug ' . string(s:plugged_dir . '/vim-matchup')
     execute 'Plug ' . string(s:plugged_dir . '/tagbar') . ', ' . string({'on': 'TagbarToggle'})
     execute 'Plug ' . string(s:plugged_dir . '/vim-gitgutter')
@@ -222,7 +231,7 @@ let s:custom_modules = [
     \ 'cursor_highlight.vim',
     \ 'snippet_engine.vim',
     \ 'completion_editing.vim',
-    \ 'easy_align_helper.vim',
+    \ 'tabular_helper.vim',
     \ 'surround.vim',
     \ 'doxygen_generator.vim',
     \ 'splitjoin.vim',
@@ -232,6 +241,7 @@ let s:custom_modules = [
     \ 'large_file.vim',
     \ 'smart_selection.vim',
     \ 'source_popup.vim',
+    \ 'smart_gf.vim',
 \]
 
 if v:version >= 900 && has('patch-9.0.0000')
